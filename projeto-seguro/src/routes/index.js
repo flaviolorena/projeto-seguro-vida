@@ -1,6 +1,7 @@
 import express from 'express';
 import cotacoes from './cotacoesRoutes.js';
 import propostas from './propostasRoutes.js';
+import coberturas from './coberturasRoutes.js';
 
 const routes = (app) => {
   app.route('/').get((req,res) =>{
@@ -10,7 +11,8 @@ const routes = (app) => {
   app.use(
     express.json(),
     cotacoes,
-    propostas
+    propostas,
+    coberturas
   )
 }
 

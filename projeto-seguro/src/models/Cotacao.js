@@ -6,13 +6,14 @@ autoIncrement.initialize(db);
 
 const cotacaoSchema = new mongoose.Schema(
   {
-    id:{type: String},
-    n_cotacao:{type: Number, default: 0},
+    n_cotacao:{type: Number},
     nome:{type: String},
     cpf:{type: String},
     inicioVigencia: { type: Date},
     terminoVigencia: {type: Date},
-    valorRisco: {type: Number},
+    valorRisco: {type: Number, min: 5000, max: 1000000},
+    cobertura:{type: mongoose.Schema.Types.ObjectId, ref: 'coberturas'},
+    
   },
   {  timestamps: {
     createdAt: 'inicioVigencia'
@@ -21,11 +22,13 @@ const cotacaoSchema = new mongoose.Schema(
 )
 cotacaoSchema.plugin(autoIncrement.plugin, {model: 'cotacoes', field: 'n_cotacao' })
 
+cotacaoSchema.pre('save', async function() {
+    let data =  this.inicioVigencia
+    data = data.setDate(data.getDate() + 1)
+    
+  })
+
 const cotacoes = mongoose.model('cotacoes', cotacaoSchema)
 
-//teste
-// let doc = await cotacoes.create({nome: 'teste'})
-// console.log(doc.createdAt)
-// console.log(doc.createdAt)
-// console.log(doc)
+
 export default cotacoes;

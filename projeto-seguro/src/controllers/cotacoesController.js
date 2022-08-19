@@ -4,11 +4,14 @@ class CotacoesController{
 
   static listarCotacoes = (req,res) =>{
     cotacoes.find()
-      .populate(['nome', 'n_cotacao'])
+      .populate({
+        path: 'cobertura',
+        model: 'cobertura'
+      })
       .exec((err, cotacoes) =>{
         res.status(200).json(cotacoes);
-      })
-  } 
+    })
+} 
 
   static listarCotacoesPorId = (req,res) =>{
     const id = req.params.id;
@@ -23,34 +26,20 @@ class CotacoesController{
 
   } 
 
-  static cadastrarCotacao = (req, res) =>{
-    let cotacao = new cotacoes(req.body);
 
-    //pre salvamento
-    cotacao.schema.pre('save', async function preSave(){
-      let now = Date.now();
-      cotacao.inicioVigencia = now;
-    next()
-    })
+  static cadastrarCotacao = async (req, res) =>{
+    try{
+      let cotacao = new cotacoes(req.body);
+        //salvamento
+        const cotac = await cotacao.save({ timestamps: { createdAt: true, updatedAt: false }})
+        res.status(201).send(cotac.toJSON())
+        
+      }catch{
+      res.status(500).json({'message': 'falha ao cadastrar'})
 
-    //salvamento
-    cotacao.save(
-      { timestamps: { createdAt: true, updatedAt: false } },
-      (err) => {
-      if(err){
-        res.status(500).send({message: `${err.message} - falha ao cadastrar`})
-      }else{
-        res.status(201).send(cotacao.toJSON())
-      }
-    })
+    }
+ 
 
-    // cotacao.save((err) => {
-    //   if(err){
-    //     res.status(500).send({message: `${err.message} - falha ao cadastrar`})
-    //   }else{
-    //     res.status(201).send(cotacao.toJSON())
-    //   }
-    // })
   }
 
   static atualizarCotacao = (req,res) => {

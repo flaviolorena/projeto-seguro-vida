@@ -4,8 +4,8 @@ const propostaSchema = new mongoose.Schema(
   {
     //referencia para a cotação
     n_proposta:{type: mongoose.Schema.Types.ObjectId, ref: 'cotacoes'},
-    nome:{type: String},
-    
+    valorSerPago:{type: Number},
+    formaPgto:{type: Number, min: 0, max: 12}
   }
 
 )
