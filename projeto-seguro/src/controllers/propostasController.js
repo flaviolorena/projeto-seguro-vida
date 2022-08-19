@@ -3,12 +3,16 @@ import propostas from '../models/Proposta.js';
 class PropostasController{
 
   static listarPropostas = (req,res) =>{
-    propostas.find()
     //qual campo deve ser populado
-      .populate(['nome', 'n_cotacao'])
+    propostas.find()
+      .populate('n_proposta')
       .exec((err, propostas) =>{
         res.status(200).json(propostas);
       })
+
+      // propostas.find((err, propostas) =>{
+      //   res.status(200).json(propostas);
+      // })
   } 
 
   static listarPropostasPorId = (req,res) =>{

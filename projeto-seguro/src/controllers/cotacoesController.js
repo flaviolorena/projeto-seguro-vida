@@ -25,13 +25,32 @@ class CotacoesController{
 
   static cadastrarCotacao = (req, res) =>{
     let cotacao = new cotacoes(req.body);
-    cotacao.save((err) => {
+
+    //pre salvamento
+    cotacao.schema.pre('save', async function preSave(){
+      let now = Date.now();
+      cotacao.inicioVigencia = now;
+    next()
+    })
+
+    //salvamento
+    cotacao.save(
+      { timestamps: { createdAt: true, updatedAt: false } },
+      (err) => {
       if(err){
         res.status(500).send({message: `${err.message} - falha ao cadastrar`})
       }else{
         res.status(201).send(cotacao.toJSON())
       }
     })
+
+    // cotacao.save((err) => {
+    //   if(err){
+    //     res.status(500).send({message: `${err.message} - falha ao cadastrar`})
+    //   }else{
+    //     res.status(201).send(cotacao.toJSON())
+    //   }
+    // })
   }
 
   static atualizarCotacao = (req,res) => {
