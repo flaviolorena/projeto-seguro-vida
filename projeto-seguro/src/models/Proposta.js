@@ -5,7 +5,7 @@ const propostaSchema = new mongoose.Schema(
     //referencia para a cotação
     n_proposta:{type: mongoose.Schema.Types.ObjectId, ref: 'cotacoes'},
     valorSerPago:{type: Number},
-    formaPgto:{type: Number, min: 0, max: 12}
+    formaPagamento:{type: Number, min: 0, max: 12}
   }
 
 )

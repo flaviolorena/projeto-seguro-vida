@@ -2,6 +2,8 @@ import express from 'express';
 import cotacoes from './cotacoesRoutes.js';
 import propostas from './propostasRoutes.js';
 import coberturas from './coberturasRoutes.js';
+import apolices from './apolicesRoutes.js';
+
 
 const routes = (app) => {
   app.route('/').get((req,res) =>{
@@ -12,7 +14,8 @@ const routes = (app) => {
     express.json(),
     cotacoes,
     propostas,
-    coberturas
+    coberturas,
+    apolices
   )
 }
 

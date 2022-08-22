@@ -2,27 +2,31 @@ import cotacoes from '../models/Cotacao.js';
 
 class CotacoesController{
 
-  static listarCotacoes = (req,res) =>{
-    cotacoes.find()
+  static listarCotacoes = async (req,res) =>{
+    try {
+      const cotacao = await cotacoes.find()
       .populate({
         path: 'cobertura',
         model: 'cobertura'
       })
-      .exec((err, cotacoes) =>{
-        res.status(200).json(cotacoes);
-    })
-} 
+      .exec()
+      res.status(200).json(cotacao);
+    } catch (err) {
+      res
+      .status(400)
+      .json({ message: `Lista não encontrada - ${err.message}  ` });
+  
+    }
+  } 
 
-  static listarCotacoesPorId = (req,res) =>{
-    const id = req.params.id;
-    cotacoes.findById(id, (err, cotacoes) =>{
-      if(err){
-        res.status(400).send({message: ` ID nao encontrado ${err.message}`})
-      }else{
-        res.status(200).send(cotacoes)
-      }
-
-    })
+  static listarCotacoesPorId = async (req,res) =>{
+    try {
+      const id = req.params.id;
+      const cotacao = await cotacoes.findById(id)
+      res.status(200).send(cotacao)
+    } catch (err) {
+      res.status(400).send({message: ` ID nao encontrado ${err.message}`})
+    }
 
   } 
 
@@ -30,41 +34,32 @@ class CotacoesController{
   static cadastrarCotacao = async (req, res) =>{
     try{
       let cotacao = new cotacoes(req.body);
-        //salvamento
         const cotac = await cotacao.save({ timestamps: { createdAt: true, updatedAt: false }})
         res.status(201).send(cotac.toJSON())
-        
-      }catch{
+    }catch{
       res.status(500).json({'message': 'falha ao cadastrar'})
-
     }
- 
 
   }
 
-  static atualizarCotacao = (req,res) => {
-    //determina o parametro a ser buscado, sera n_cotacao em vez de id 
-    const id = req.params.id;
-    //usa o metodo, o id doelemento a ser atualizado, o que sera substituido (req.body) 
-    cotacoes.findByIdAndUpdate(id,{$set: req.body }, (err) => {
-      if(!err){
-        res.status(200).send({message: 'cotacao atualizada'})
-      }else{
-        res.status(500).send({message: err.message})
-      }
-    } )
+  static atualizarCotacao = async (req,res) => {
+    try {
+      const id = req.params.id;
+      await cotacoes.findByIdAndUpdate(id,{$set: req.body })
+      res.status(200).send({message: 'cotacao atualizada'})
+    } catch (err) {
+      res.status(500).send({message: err.message})  
+    }
   }
 
-  static deletarCotacao = (req,res) => {
-    //determina o parametro a ser buscado, sera n_cotacao em vez de id 
-    const id = req.params.id;
-    cotacoes.findByIdAndDelete(id, (err) => {
-      if(!err){
-        res.status(200).send({message: 'cotacao deletada'})
-      }else{
-        res.status(500).send({message: err.message})
-      }
-    } )
+  static deletarCotacao = async (req,res) => {
+    try {
+      const id = req.params.id;
+      await cotacoes.findByIdAndDelete(id)
+      res.status(200).send({message: 'cotacao deletada'})
+    } catch (err) {
+      res.status(500).send({message: err.message})
+    }
   }
 
   static listarCotacoesPorNum = (req,res) =>{
