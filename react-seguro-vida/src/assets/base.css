@@ -45,8 +45,11 @@
 
 .campoTexto:disabled{
   color: #a8a8a8;
-
 }
+
+/* .campoTexto:required{
+  background-color: #ffa07b;
+} */
 
 .labelTexto{
   margin-top: 20px;
@@ -65,6 +68,9 @@
 
 .w50{
   width: 50%;
+}
+.w70{
+  width: 70%;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

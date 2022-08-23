@@ -6,7 +6,7 @@ function Cabecalho() {
     <header>
       <nav>
         <ul className="flex flex-centro cor cabecalho">
-          <li> <Link className="item__cabecalho"  to="/">Home</Link> </li>
+          <li> <Link className="item__cabecalho"  to="/">Criar Cotação</Link> </li>
           <li> <Link className="item__cabecalho" to="/sobre">Sobre</Link> </li>
         </ul>
       </nav>

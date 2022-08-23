@@ -14,7 +14,7 @@ const cpfMask = ({value, onChange}) =>{
       }
     })
   }
-  return <InputMask className="campoTexto w30" mask='999.999.999-99' value={value} onChange={handleChange} placeholder="ex.: 123.456.789-99"/>
+  return <InputMask className="campoTexto w30" mask='999.999.999-99' value={value} onChange={handleChange} placeholder="ex.: 123.456.789-99" required/>
 
 }
 
