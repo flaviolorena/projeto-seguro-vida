@@ -2,7 +2,7 @@ import React from 'react';
 import './assets/base.css'
 import { Routes, Route } from 'react-router-dom';
 import CriarCotacao from './paginas/CriarCotacao.js';
-import Sobre from './paginas/Sobre';
+import Cotacoes from './paginas/Cotacoes';
 import Cabecalho from './componentes/Cabecalho';
 import { Container } from '@mui/system';
 
@@ -14,7 +14,7 @@ function App() {
     <Container maxWidth="lg" sx={{marginTop: "80px"}}>
       <Routes>
         <Route path='/' element={<CriarCotacao/>} />
-        <Route path='sobre' element={<Sobre/>} />
+        <Route path='sobre' element={<Cotacoes/>} />
       </Routes>
     </Container>
     </>

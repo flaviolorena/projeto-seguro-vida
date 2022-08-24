@@ -118,6 +118,24 @@
   margin: 20px 0px;
 }
 
-.lista-paracelas{
+/* ~~~ pagina cotacoes ~~~ */
+.lista-cotacoes{
+}
 
+.item-cotacoes{
+  margin: 30px 5px;
+  padding: 10px 15px;
+  font-size: 18px;
+}
+
+.campoCotacao{
+  display: flex;
+  align-items: center;
+  color:#464646;
+}
+
+.valorCotacao{
+  padding: 0 12px;
+  font-weight: 500;
+  font-size: 20px;
 }

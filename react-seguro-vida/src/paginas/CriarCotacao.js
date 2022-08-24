@@ -9,8 +9,6 @@ function CriarCotacao() {
   
   const fieldset = document.getElementById('cotacao-fieldset')
 
-  
- 
   const [usuario, setUsuario] = useState({
     nome: '',
     cpf: '',
@@ -80,7 +78,12 @@ function CriarCotacao() {
 
   function enviarForm(event){
     event.preventDefault()
-    console.log(usuario)
+    
+    const storaged = JSON.parse(localStorage.getItem('proposta'))
+    let dados = localStorage.getItem('proposta') !== null ? storaged : [] 
+    dados.push(usuario)
+    localStorage.setItem('proposta', JSON.stringify(dados))
+
   }
 
   const coberturaMap = coberturas.map((item) => {
@@ -96,7 +99,7 @@ function CriarCotacao() {
           Formulario de Cotação
       </Typography>
 
-      <form className="form">
+      <form className="form" onSubmit={enviarForm} >
       <fieldset id="cotacao-fieldset" className="cotacao-fieldset">
         <legend>Dados para cotação</legend>
 
@@ -185,7 +188,7 @@ function CriarCotacao() {
 
           <button className="btn-enviar" onClick={(event) => avancarForm(event)} >Avançar</button>
           :
-          <button className="btn-enviar" onClick={(event) => enviarForm(event)} >Enviar</button>
+          <button className="btn-enviar" type="submit">Enviar</button>
         }
         
         </div>
