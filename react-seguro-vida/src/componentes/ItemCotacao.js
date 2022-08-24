@@ -2,7 +2,6 @@ import { Paper } from "@mui/material";
 import React from "react";
 
 function ItemCotacao(props) {
-  console.log(props.info)
   return (
     <Paper className="item-cotacoes">
         <div className="campoCotacao">
@@ -31,7 +30,7 @@ function ItemCotacao(props) {
         </div>
         <div className="campoCotacao">
           <p>Tipo da cobertura:</p>
-          <p className="valorCotacao"> {props.info.cobertura} </p> 
+          <p className="valorCotacao"> {props.info.nomeCobertura} </p> 
         </div>
     </Paper>
 

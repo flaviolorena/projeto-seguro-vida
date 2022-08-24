@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import autoIncrement from 'mongoose-auto-increment';
 import db from '../config/dbConnect.js'
 
-autoIncrement.initialize(db);
+// autoIncrement.initialize(db);
 
 const cotacaoSchema = new mongoose.Schema(
   {
@@ -20,13 +20,13 @@ const cotacaoSchema = new mongoose.Schema(
   }}
 
 )
-cotacaoSchema.plugin(autoIncrement.plugin, {model: 'cotacoes', field: 'n_cotacao' })
+// cotacaoSchema.plugin(autoIncrement.plugin, {model: 'cotacoes', field: 'n_cotacao' })
 
-cotacaoSchema.pre('save', async function() {
-    let data =  this.inicioVigencia
-    data = data.setDate(data.getDate() + 1)
+// cotacaoSchema.pre('save', async function() {
+//     let data =  this.inicioVigencia
+//     data = data.setDate(data.getDate() + 1)
     
-  })
+//   })
 
 const cotacoes = mongoose.model('cotacoes', cotacaoSchema)
 

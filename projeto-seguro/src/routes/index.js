@@ -3,6 +3,7 @@ import cotacoes from './cotacoesRoutes.js';
 import propostas from './propostasRoutes.js';
 import coberturas from './coberturasRoutes.js';
 import apolices from './apolicesRoutes.js';
+import contadores from './contadoresRoutes.js';
 
 
 const routes = (app) => {
@@ -15,7 +16,8 @@ const routes = (app) => {
     cotacoes,
     propostas,
     coberturas,
-    apolices
+    apolices,
+    contadores
   )
 }
 

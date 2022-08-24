@@ -7,28 +7,32 @@ import TerminoVigencia  from "../componentes/dataMask.js";
 
 function CriarCotacao() {
   
-  const fieldset = document.getElementById('cotacao-fieldset')
 
   const [usuario, setUsuario] = useState({
+    n_cotacao: undefined,
     nome: '',
     cpf: '',
+    inicioVigencia: '',
     terminoVigencia: '',
     valorRisco: null,
     valorPagoSegurado: null,
     qtParcelas: null,
-    cobertura: ''
+    cobertura: '',
+    nomeCobertura: ''
 
   })
 
-  const [exibeProposta, setExibeProposta] = useState(false)
 
   const [coberturas, setCoberturas] = useState([])
 
+  const [contador, setContador] = useState([])
+
   useEffect(()=>{
     getCoberturas()
-    console.log(coberturas)
-    console.log(usuario)
-  },[])
+    getNumCotacao()
+    inicioVigencia()
+    
+  },[contador])
   const getCoberturas = async () => {
     const { data } = await http.get('coberturas')
       try{
@@ -36,11 +40,48 @@ function CriarCotacao() {
       }catch(error){
         console.log(error)
       }
+  };  
+
+  
+  const getNumCotacao = async () => {
+    const { data } = await http.get('contadores')
+      try{
+
+        setContador(data[0].n_cotacao);
+      }catch(error){
+        console.log(error)
+      }
   };
+
+  function setCotacao(){
+    setUsuario({...usuario, n_cotacao: contador})
+    editCotacao()
+  }
+
+  function editCotacao(){
+    const novoContador = contador + 1
+    http.put(`/contadores/630671a2b3dfa66834b7a2f2/`, {
+      n_cotacao: novoContador,
+    })
+  }
+
+  function inicioVigencia(){
+    const now = new Date()
+    const date = now.getDate() + 1
+    const month = now.getMonth()
+    const year = now.getFullYear()
+    setUsuario({
+      ...usuario,
+      inicioVigencia: `${date}/${month}/${year}`
+    })
+    console.log(usuario.inicioVigencia)
+  }
+
+  
+  const nowDate = () => {new Date()}
 
   function calcParcelas(valorRisco, qtParcelas){
     const valor = valorRisco / qtParcelas
-    console.log(usuario)
     return valor.toFixed(2)
 
   }
@@ -52,7 +93,6 @@ function CriarCotacao() {
       ...usuario,
       valorPagoSegurado: valor,
     })
-    console.log(usuario)
 
     return valor;
   }
@@ -64,32 +104,47 @@ function CriarCotacao() {
       cpf:''
     })
 
-    fieldset.removeAttribute('disabled')
-    setExibeProposta(false)
   }
 
-  function avancarForm(event){
-    event.preventDefault()
-    fieldset.setAttribute('disabled','')
-    calcValorPagoSegurado(usuario.valorRisco)
-    setExibeProposta(true)
-    console.log(usuario)
+  const coberturaMap = coberturas.map((item) => {
+    return <option key={item._id} value={item._id} > {item.nome}</option>
+  })
+
+  function searchCobertura(){
+    const ID = usuario.cobertura
+    coberturas.map((item) => ID === item._id ? setUsuario({...usuario, nomeCobertura: item.nome}) : console.log(item._id) )
   }
+
+  function postCotacao(){
+    http
+    .post('/cotacoes/', {
+      //nome banco  :  nome usuario
+      nome: usuario.nome,
+      n_cotacao: usuario.n_cotacao,
+      cpf: usuario.cpf,
+      // inicioVigencia: nowDate,
+      terminoVigencia: usuario.terminoVigencia,
+      valorRisco: usuario.valorRisco,
+      cobertura: usuario.cobertura,
+
+    })
+    .then(() => console.log('cotacao postada'));
+  }
+  
 
   function enviarForm(event){
     event.preventDefault()
-    
+    calcValorPagoSegurado(usuario.valorRisco)
+    searchCobertura()
+    setCotacao()
+    postCotacao()
     const storaged = JSON.parse(localStorage.getItem('proposta'))
     let dados = localStorage.getItem('proposta') !== null ? storaged : [] 
     dados.push(usuario)
     localStorage.setItem('proposta', JSON.stringify(dados))
+    console.log(usuario)
 
   }
-
-  const coberturaMap = coberturas.map((item) => {
-    return <option value={item._id} > {item.nome}</option>
-
-  })
 
   return (
     <Container maxWidth="lg">
@@ -109,6 +164,7 @@ function CriarCotacao() {
           name="nome" 
           className="campoTexto w100" 
           placeholder="ex.: José Santos Silva" 
+          value={usuario.nome}
           onChange={(event) => setUsuario({...usuario, nome: event.target.value})}   
           required 
         />    
@@ -118,7 +174,10 @@ function CriarCotacao() {
           value={usuario.cpf} 
           onChange={(event) => setUsuario({...usuario, cpf: event.target.value})}   
         />
-        
+
+        <label htmlFor="inicioVigencia" className="labelTexto">Início da Vigência</label>
+        <p className="campoTexto w30">{usuario.inicioVigencia}</p>
+
         <label htmlFor="terminoVigencia" className="labelTexto">Termino da Vigência</label>
         <TerminoVigencia 
           value={usuario.terminoVigencia} 
@@ -136,61 +195,27 @@ function CriarCotacao() {
           min="5000" max="1000000" 
           placeholder="ex.: R$10.000,00" 
           required 
-        />    
+        />
       
         <label htmlFor="cobertura" className="labelTexto" >Tipo da cobertura</label>
         <select
          className="campoTexto w70"
          value={usuario.cobertura}
-         onChange={(evento) => setUsuario({...usuario, cobertura: evento.target.value})}
+         onChange={(evento) => setUsuario({...usuario, cobertura: evento.target.value })}
          required
         >
+          <option defaultValue hidden>Selecione a cobertura</option>
           {coberturaMap}
         </select>
 
       </fieldset>
 
       {/* Proposta */}
-      {
-        exibeProposta &&
-
-      <fieldset id="pagamento-fieldset" className="cotacao-fieldset" >
-        <legend>Forma de pagamento</legend>
-        <p>Valor a vista: <strong>R${usuario.valorPagoSegurado}</strong> </p>
-        <p>Valor parcelado:</p>
-        <select 
-          className="campoTexto w50" 
-          value={usuario.qtParcelas} 
-          onChange={(evento) => setUsuario({...usuario, qtParcelas: evento.target.value})}
-        >
-          <option value="0" > A vista: R$ {usuario.valorPagoSegurado} </option>
-          <option value="1" > Parcelado 1x: R$ {calcParcelas(usuario.valorPagoSegurado,1)} </option>
-          <option value="2" > Parcelado 2x: R$ {calcParcelas(usuario.valorPagoSegurado,2)} </option>
-          <option value="3" > Parcelado 3x: R$ {calcParcelas(usuario.valorPagoSegurado,3)} </option>
-          <option value="4" > Parcelado 4x: R$ {calcParcelas(usuario.valorPagoSegurado,4)} </option>
-          <option value="5" > Parcelado 5x: R$ {calcParcelas(usuario.valorPagoSegurado,5)} </option>
-          <option value="6" > Parcelado 6x: R$ {calcParcelas(usuario.valorPagoSegurado,6)} </option>
-          <option value="7" > Parcelado 7x: R$ {calcParcelas(usuario.valorPagoSegurado,7)} </option>
-          <option value="8" > Parcelado 8x: R$ {calcParcelas(usuario.valorPagoSegurado,8)} </option>
-          <option value="9" > Parcelado 9x: R$ {calcParcelas(usuario.valorPagoSegurado,9)} </option>
-          <option value="10" > Parcelado 10x: R$ {calcParcelas(usuario.valorPagoSegurado,10)} </option>
-          <option value="11" > Parcelado 11x: R$ {calcParcelas(usuario.valorPagoSegurado,11)} </option>
-          <option value="12" > Parcelado 12x: R$ {calcParcelas(usuario.valorPagoSegurado,12)} </option>
-        </select>
-      </fieldset>
-      }
+      
 
         <div className="container-btn">
           <button className="btn-limpar" onClick={(event) => limparForm(event)} >Limpar</button>
-          
-        {
-          !exibeProposta ?
-
-          <button className="btn-enviar" onClick={(event) => avancarForm(event)} >Avançar</button>
-          :
-          <button className="btn-enviar" type="submit">Enviar</button>
-        }
-        
+          <button className="btn-elaborar" type="submit" >Elaborar proposta</button>
         </div>
       </form>
 
