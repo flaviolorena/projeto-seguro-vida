@@ -14,6 +14,23 @@ function Propostas() {
       </Typography>
 {/* 
 
+  function calcParcelas(valorRisco, qtParcelas){
+    const valor = valorRisco / qtParcelas
+    return valor.toFixed(2)
+
+  }
+
+    function calcValorPagoSegurado(valorRisco){
+    let valor = valorRisco * 0.05
+    valor = valor.toFixed(2)
+    setUsuario({
+      ...usuario,
+      valorPagoSegurado: valor,
+    })
+
+    return valor;
+  }
+
       <fieldset id="pagamento-fieldset" className="cotacao-fieldset" >
         <legend>Forma de pagamento</legend>
         <p>Valor a vista: <strong>R${usuario.valorPagoSegurado}</strong> </p>
