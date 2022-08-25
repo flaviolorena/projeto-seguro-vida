@@ -9,7 +9,19 @@ function Propostas() {
   const [n_cotacao, setNCotacao] = useState(0)
   const [id_proposta, setId_proposta] = useState(0)
   const [cotacoes, setCotacoes] = useState([])
-  const [proposta, setProposta] = useState({})
+  const [proposta, setProposta] = useState({
+    cobertura: '',
+    cpf: '',
+    inicioVigencia: '',
+    n_cotacao: 0,
+    nome: '',
+    terminoVigencia: '',
+    valorRisco:'',
+    //valores proposta
+    valorPagoSegurado:0,
+    qtParcelas: 0
+
+  })
 
 
   useEffect(()=>{
@@ -47,11 +59,34 @@ function Propostas() {
     console.log(proposta)
   },[])
   
+  useEffect(() =>{
+    calcValorPagoSegurado()
+    
+  },[setProposta])
+  function calcValorPagoSegurado(valorRisco){
+    let valor = valorRisco * 0.05
+    valor = valor.toFixed(2)
+    console.log(valor)
+    return Number(valor);
+  }
+  calcValorPagoSegurado(proposta.valorRisco)
+
   const getCotacaoID = async () => {
     try{
       const {data} = await http.get(`cotacoes/${id_proposta}`)
-      // console.log(data)
+      console.log(data)
       setProposta(data);
+      setProposta({
+        ...proposta,
+        cobertura: data.cobertura,
+        cpf: data.cpf,
+        inicioVigencia: data.inicioVigencia,
+        n_cotacao: data.n_cotacao,
+        nome: data.nome,
+        terminoVigencia: data.terminoVigencia,
+        valorRisco: data.valorRisco,
+        valorPagoSegurado: calcValorPagoSegurado(),
+      });
     }catch(error){
       console.error(error)
     }

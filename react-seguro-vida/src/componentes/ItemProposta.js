@@ -34,11 +34,15 @@ function ItemProposta(props) {
   return (
     <Paper className="item-cotacoes">
         <div className="campoCotacao">
+          <p>Número da proposta: </p>
+          <p className="valorCotacao"> {props.info.n_cotacao} </p> 
+        </div>
+        <div className="campoCotacao">
           <p>Nome: </p>
           <p className="valorCotacao"> {props.info.nome} </p> 
         </div>
         <div className="campoCotacao">
-          <p>CPF</p>
+          <p>CPF:</p>
         <p className="valorCotacao"> {props.info.cpf} </p> 
         </div>
         <div className="campoCotacao">
@@ -52,6 +56,10 @@ function ItemProposta(props) {
         <div className="campoCotacao">
           <p>Valor de risco:</p>
           <p className="valorCotacao"> R${props.info.valorRisco} </p> 
+        </div>           
+        <div className="campoCotacao">
+          <p>Valor a ser pago pelo segurado:</p>
+          <p className="valorCotacao"> R${props.info.valorPagoSegurado} </p> 
         </div>   
         <div className="campoCotacao">
           <p>Tipo da cobertura:</p>
