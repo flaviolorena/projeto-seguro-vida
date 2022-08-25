@@ -1,9 +1,62 @@
 import React, { useEffect, useState } from "react";
 import { Container, Paper, Typography } from "@mui/material";
+import http from '../servicos/http.js'
+import ItemProposta from '../componentes/ItemProposta'
 
 
 function Propostas() {
+
+  const [n_cotacao, setNCotacao] = useState(0)
+  const [id_proposta, setId_proposta] = useState(0)
+  const [cotacoes, setCotacoes] = useState([])
+  const [proposta, setProposta] = useState({})
+
+
+  useEffect(()=>{
+    const storaged = JSON.parse(localStorage.getItem('n_cotacao'))
+    setNCotacao(storaged)
+  },[])
+
+  useEffect(()=>{
+    const getCotacoes = async () => {
+      try{
+        const {data} = await http.get('cotacoes')
+        // console.log(data)
+        setCotacoes(data);
+      }catch(error){
+        console.error(error)
+      }
+    };  
+    getCotacoes()
+    
+  },[])
+
+  useEffect(() =>{
+
+    const mapCotacoes = () => {
+      const map = cotacoes.map(
+        (item) => n_cotacao === item.n_cotacao ? 
+          setId_proposta(item._id) : 
+          console.log("nao encontrou") )
+
+      return map
+    }
+    mapCotacoes()
+    getCotacaoID()
+
+    console.log(proposta)
+  },[])
   
+  const getCotacaoID = async () => {
+    try{
+      const {data} = await http.get(`cotacoes/${id_proposta}`)
+      // console.log(data)
+      setProposta(data);
+    }catch(error){
+      console.error(error)
+    }
+  };  
+
 
   return (
     <Container maxWidth="lg">
@@ -12,7 +65,10 @@ function Propostas() {
       <Typography component='h1' variant='h5' textAlign='center'>
           Propostas
       </Typography>
-{/* 
+      <ItemProposta info={proposta} />
+
+
+{/* vn_cotacaon_cotacaon_cotacaon_cotacao
 
   function calcParcelas(valorRisco, qtParcelas){
     const valor = valorRisco / qtParcelas

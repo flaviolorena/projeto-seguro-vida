@@ -29,7 +29,7 @@ function CriarCotacao() {
     const getCoberturas = async () => {
       try{
         const {data} = await http.get('coberturas')
-        // console.log(data)
+        console.log(data)
         setCoberturas(data);
       }catch(error){
         console.error(error)
@@ -113,15 +113,21 @@ function CriarCotacao() {
     })
     .then(() => console.log('cotacao postada'));
   }
-  
-  function enviarForm(event){
-    event.preventDefault()
-    editCotacao()
+  function saveLocalStorage(){
+
     const storaged = JSON.parse(localStorage.getItem('proposta'))
     let dados = localStorage.getItem('proposta') !== null ? storaged : [] 
     dados.push(usuario)
     localStorage.setItem('proposta', JSON.stringify(dados))
-    console.log(usuario)
+    console.log(usuario.n_cotacao)
+    localStorage.setItem('n_cotacao', JSON.stringify(usuario.n_cotacao))
+
+  }
+  function enviarForm(event){
+    event.preventDefault()
+    // console.log(usuario)
+    editCotacao()
+    saveLocalStorage()
     postCotacao()
   }
 
