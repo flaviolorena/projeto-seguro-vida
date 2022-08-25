@@ -36,8 +36,8 @@ class CotacoesController{
       let cotacao = new cotacoes(req.body);
         const cotac = await cotacao.save({ timestamps: { createdAt: true, updatedAt: false }})
         res.status(201).send(cotac.toJSON())
-    }catch{
-      res.status(500).json({'message': 'falha ao cadastrar'})
+    }catch(err){
+      res.status(500).json({'message': `${err.message} falha ao cadastrar`})
     }
 
   }

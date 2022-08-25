@@ -93,19 +93,11 @@ function CriarCotacao() {
 
   function setIDCobertura(evento){
     const coberturaID = evento
-    setNomeID(coberturaID)
-    // setCoberturaID(coberturaID)
-  }
-
-  // function setCoberturaID(ID){
-  //   setUsuario({...usuario, cobertura: ID })
-  // }
-
-  function setNomeID(cobertura){
-    const ID = cobertura
-    coberturas.map((item) => ID == item._id ? setUsuario({...usuario, nomeCobertura: item.nome, cobertura: ID}) : console.log("nao encontrou") )
+    coberturas.map((item) => coberturaID === item._id ? setUsuario({...usuario, nomeCobertura: item.nome, cobertura: coberturaID}) : console.log("nao encontrou") )
 
   }
+
+
 
   function postCotacao(){
     http
@@ -114,7 +106,6 @@ function CriarCotacao() {
       nome: usuario.nome,
       n_cotacao: usuario.n_cotacao,
       cpf: usuario.cpf,
-      // inicioVigencia: nowDate,
       terminoVigencia: usuario.terminoVigencia,
       valorRisco: usuario.valorRisco,
       cobertura: usuario.cobertura,
@@ -126,12 +117,12 @@ function CriarCotacao() {
   function enviarForm(event){
     event.preventDefault()
     editCotacao()
-    // postCotacao()
     const storaged = JSON.parse(localStorage.getItem('proposta'))
     let dados = localStorage.getItem('proposta') !== null ? storaged : [] 
     dados.push(usuario)
     localStorage.setItem('proposta', JSON.stringify(dados))
     console.log(usuario)
+    postCotacao()
   }
 
   return (
