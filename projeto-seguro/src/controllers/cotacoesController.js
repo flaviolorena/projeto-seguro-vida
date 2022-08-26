@@ -48,19 +48,12 @@ class CotacoesController{
       dadosNovaProposta.n_proposta = dadosNovaProposta.n_cotacao
       delete dadosNovaProposta.n_cotacao
 
-
-      
       let proposta = new propostas(dadosNovaProposta);
       const novaProposta = await proposta.save()
 
-      {
-        // _id:
-      }
-
+      new propostas()
       res.status(201).send(novaProposta)
 
-
-        new proposta()
     }catch(err){
       res.status(500).json({'message': `${err.message} falha ao cadastrar`})
     }

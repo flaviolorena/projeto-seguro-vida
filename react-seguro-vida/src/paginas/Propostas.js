@@ -9,28 +9,26 @@ function Propostas() {
   const [n_cotacao, setN_cotacao] = useState(18)
   const [proposta, setProposta] = useState({})
   const [loading, setLoading] = useState(true)
+  
   useEffect(()=>{
     setN_cotacao((window.location.search).replace('?',''))
-
+    console.log(`cotacao em state: ${n_cotacao}`)
   },[]) 
-  // const params = useParams()
-
-
 
   useEffect(() =>{
+    const getProposta = async () => {
+      try{
+        const {data} = await http.get(`propostas/busca/?n_proposta=${n_cotacao}`)
+        console.log(data)
+        setProposta(data[0]);
+        setLoading(false)
+      }catch(error){
+        console.error(error)
+      }
+    };  
     getProposta()
-  },[])
+  },[setProposta])
 
-  const getProposta = async () => {
-    try{
-      const {data} = await http.get(`propostas/busca/?n_proposta=${n_cotacao}`)
-      console.log(data)
-      setProposta(data[0]);
-      setLoading(false)
-    }catch(error){
-      console.error(error)
-    }
-  };  
 
 
   if(loading){

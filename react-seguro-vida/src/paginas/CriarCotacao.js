@@ -1,16 +1,17 @@
 import { Container , Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import http from '../servicos/http.js'
-import CpfMask  from "../componentes/cpfMask.js";
-import { Link } from "react-router-dom";
 
 function CriarCotacao() {
   
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [coberturas, setCoberturas] = useState([])
   const [contador, setContador] = useState([])
   const [ minMaxVigencia , setMinMaxVigencia] = useState({})
+
 
   const [cotacao, setCotacao] = useState({
     n_cotacao: undefined,
@@ -152,10 +153,12 @@ function CriarCotacao() {
   }
   function enviarForm(event){
     event.preventDefault()
-    // editCotacao()
+    editCotacao()
     saveLocalStorage()
     console.log(cotacao)
-    // postCotacao()
+    postCotacao()
+    navigate(`/propostas/?${cotacao.n_cotacao}`);
+
   }
 
   if(loading){
@@ -257,19 +260,19 @@ function CriarCotacao() {
 
       {/* Proposta */}
 
-            <Link 
+            
+        <div className="container-btn">
+          <button className="btn-limpar" onClick={(event) => limparForm(event)} >Limpar</button>
+          <button className="btn-elaborar" type="submit" >Elaborar proposta</button>
+            {/* <Link 
               to={{
                 pathname: "/propostas",
                 search: `${cotacao.n_cotacao}`,
               }}
             >
-              Elaborar proposta
-            </Link>
-        <div className="container-btn">
-          <button className="btn-limpar" onClick={(event) => limparForm(event)} >Limpar</button>
-          <button className="btn-elaborar" type="submit" >
-
-          </button>
+              Proposta Link 
+            </Link> */}
+             
         </div>
       </form>
 
