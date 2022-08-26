@@ -3,9 +3,14 @@ import mongoose from "mongoose";
 const propostaSchema = new mongoose.Schema(
   {
     //referencia para a cotação
-    n_proposta:{type: mongoose.Schema.Types.ObjectId, ref: 'cotacoes'},
-    valorSerPago:{type: Number},
-    formaPagamento:{type: Number, min: 0, max: 12}
+    n_proposta:{type: Number},
+    nome:{type: String},
+    cpf:{type: String},
+    inicioVigencia: { type: Date},
+    terminoVigencia: {type: Date},
+    valorRisco: {type: Number, min: 5000, max: 1000000},
+    cobertura:{type: mongoose.Schema.Types.ObjectId, ref: 'coberturas'},
+    
   }
 
 )

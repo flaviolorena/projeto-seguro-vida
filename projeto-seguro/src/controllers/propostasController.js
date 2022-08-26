@@ -10,10 +10,7 @@ class PropostasController{
         res.status(200).json(propostas);
       })
 
-      // propostas.find((err, propostas) =>{
-      //   res.status(200).json(propostas);
-      // })
-  } 
+  }
 
   static listarPropostasPorId = (req,res) =>{
     const id = req.params.id;
@@ -63,6 +60,20 @@ class PropostasController{
       }
     } )
   }
+
+  static listarPropostaPorNum = async (req,res) =>{
+    try{
+      const numeroProposta = req.query.n_proposta
+      const dadoProposta = await propostas.find({"n_proposta": numeroProposta}, )
+      res.status(200).send(dadoProposta)
+    }
+    
+    catch(err){
+      res.status(400).json({'message': `Proposta não encontrada não encontrado - ${err.message}  `})
+    }
+
+  }
+
 }
 
 export default PropostasController;

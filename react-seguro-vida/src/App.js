@@ -16,7 +16,7 @@ function App() {
       <Routes>
         <Route path='/' element={<CriarCotacao/>} />
         <Route path='cotacoes' element={<Cotacoes/>} />
-        <Route path='propostas' element={<Propostas/>} />
+        <Route path='propostas/' element={<Propostas/>} />
       </Routes>
     </Container>
     </>

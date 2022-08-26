@@ -1,101 +1,55 @@
 import React, { useEffect, useState } from "react";
-import { Container, Paper, Typography } from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import http from '../servicos/http.js'
 import ItemProposta from '../componentes/ItemProposta'
 
 
 function Propostas() {
 
-  const [n_cotacao, setNCotacao] = useState(0)
-  const [id_proposta, setId_proposta] = useState(0)
-  const [cotacoes, setCotacoes] = useState([])
-  const [proposta, setProposta] = useState({
-    cobertura: '',
-    cpf: '',
-    inicioVigencia: '',
-    n_cotacao: 0,
-    nome: '',
-    terminoVigencia: '',
-    valorRisco:'',
-    //valores proposta
-    valorPagoSegurado:0,
-    qtParcelas: 0
-
-  })
-
-
+  const [n_cotacao, setN_cotacao] = useState(18)
+  const [proposta, setProposta] = useState({})
+  const [loading, setLoading] = useState(true)
   useEffect(()=>{
-    const storaged = JSON.parse(localStorage.getItem('n_cotacao'))
-    setNCotacao(storaged)
-  },[])
+    setN_cotacao((window.location.search).replace('?',''))
 
-  useEffect(()=>{
-    const getCotacoes = async () => {
-      try{
-        const {data} = await http.get('cotacoes')
-        // console.log(data)
-        setCotacoes(data);
-      }catch(error){
-        console.error(error)
-      }
-    };  
-    getCotacoes()
-    
-  },[])
+  },[]) 
+  // const params = useParams()
+
+
 
   useEffect(() =>{
-
-    const mapCotacoes = () => {
-      const map = cotacoes.map(
-        (item) => n_cotacao === item.n_cotacao ? 
-          setId_proposta(item._id) : 
-          console.log("nao encontrou") )
-
-      return map
-    }
-    mapCotacoes()
-    getCotacaoID()
-
-    console.log(proposta)
+    getProposta()
   },[])
-  
-  useEffect(() =>{
-    calcValorPagoSegurado()
-    
-  },[setProposta])
-  function calcValorPagoSegurado(valorRisco){
-    let valor = valorRisco * 0.05
-    valor = valor.toFixed(2)
-    console.log(valor)
-    return Number(valor);
-  }
-  calcValorPagoSegurado(proposta.valorRisco)
 
-  const getCotacaoID = async () => {
+  const getProposta = async () => {
     try{
-      const {data} = await http.get(`cotacoes/${id_proposta}`)
+      const {data} = await http.get(`propostas/busca/?n_proposta=${n_cotacao}`)
       console.log(data)
-      setProposta(data);
-      setProposta({
-        ...proposta,
-        cobertura: data.cobertura,
-        cpf: data.cpf,
-        inicioVigencia: data.inicioVigencia,
-        n_cotacao: data.n_cotacao,
-        nome: data.nome,
-        terminoVigencia: data.terminoVigencia,
-        valorRisco: data.valorRisco,
-        valorPagoSegurado: calcValorPagoSegurado(),
-      });
+      setProposta(data[0]);
+      setLoading(false)
     }catch(error){
       console.error(error)
     }
   };  
 
 
+  if(loading){
+    return(
+      <Container maxWidth="lg">
+        <>
+
+        <Typography component='h1' variant='h5' textAlign='center'>
+            Carregando...
+        </Typography>
+        </>
+      </Container>
+
+    )
+  }
+
   return (
     <Container maxWidth="lg">
-      <Paper>
+      <>
 
       <Typography component='h1' variant='h5' textAlign='center'>
           Propostas
@@ -147,7 +101,7 @@ function Propostas() {
         </select>
       </fieldset>
 */}
-      </Paper>
+      </>
     </Container>
   );
 }

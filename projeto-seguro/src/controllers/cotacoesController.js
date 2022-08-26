@@ -1,4 +1,5 @@
 import cotacoes from '../models/Cotacao.js';
+import propostas from '../models/Proposta.js';
 
 class CotacoesController{
 
@@ -34,8 +35,32 @@ class CotacoesController{
   static cadastrarCotacao = async (req, res) =>{
     try{
       let cotacao = new cotacoes(req.body);
+      //4.1 salva os dados
         const cotac = await cotacao.save({ timestamps: { createdAt: true, updatedAt: false }})
-        res.status(201).send(cotac.toJSON())
+
+      //4.2 calcula o valor a ser pago
+      let valorPago = (cotacao.valorRisco * 0.05).toFixed(2)
+
+      //4.3 cria let com os dados da cotacao
+      let dadosNovaProposta = cotac.toJSON();
+        //insere o calculo do valor a ser pago na nova proposta
+      dadosNovaProposta.valorPago = valorPago;
+      dadosNovaProposta.n_proposta = dadosNovaProposta.n_cotacao
+      delete dadosNovaProposta.n_cotacao
+
+
+      
+      let proposta = new propostas(dadosNovaProposta);
+      const novaProposta = await proposta.save()
+
+      {
+        // _id:
+      }
+
+      res.status(201).send(novaProposta)
+
+
+        new proposta()
     }catch(err){
       res.status(500).json({'message': `${err.message} falha ao cadastrar`})
     }

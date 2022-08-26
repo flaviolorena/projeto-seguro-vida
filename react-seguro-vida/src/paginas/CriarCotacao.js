@@ -1,14 +1,18 @@
-import { Container, Paper, Typography } from "@mui/material";
+import { Container , Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 
 import http from '../servicos/http.js'
 import CpfMask  from "../componentes/cpfMask.js";
-import TerminoVigencia  from "../componentes/dataMask.js";
+import { Link } from "react-router-dom";
 
 function CriarCotacao() {
   
+  const [loading, setLoading] = useState(true)
+  const [coberturas, setCoberturas] = useState([])
+  const [contador, setContador] = useState([])
+  const [ minMaxVigencia , setMinMaxVigencia] = useState({})
 
-  const [usuario, setUsuario] = useState({
+  const [cotacao, setCotacao] = useState({
     n_cotacao: undefined,
     nome: '',
     cpf: '',
@@ -17,20 +21,15 @@ function CriarCotacao() {
     valorRisco: null,
     cobertura: '',
     nomeCobertura: ''
-
   })
 
-
-  const [coberturas, setCoberturas] = useState([])
-
-  const [contador, setContador] = useState([])
-
   useEffect(()=>{
+
     const getCoberturas = async () => {
       try{
         const {data} = await http.get('coberturas')
-        console.log(data)
         setCoberturas(data);
+        setLoading(false)
       }catch(error){
         console.error(error)
       }
@@ -38,7 +37,6 @@ function CriarCotacao() {
     getCoberturas()
     
   },[])
-
 
   useEffect(()=>{
     function dataVigencia(){
@@ -54,8 +52,8 @@ function CriarCotacao() {
         const { data } = await http.get('contadores')
         setContador(data[0].n_cotacao);
 
-        setUsuario({
-          ...usuario,
+        setCotacao({
+          ...cotacao,
           n_cotacao: data[0].n_cotacao,
           inicioVigencia: dataVigencia(),
         })
@@ -65,6 +63,23 @@ function CriarCotacao() {
     };
     getNumCotacao()
 
+  },[])
+
+  useEffect(()=>{
+
+    function dataVigencia(){
+      var now = new Date();
+      const min = new Date(now.getFullYear() + 5, now.getMonth(), now.getDate() + 1)
+      const max = new Date(now.getFullYear() + 10, now.getMonth(), now.getDate() + 1)
+      const minDate = `${min.getFullYear()}-${String(min.getMonth()).padStart(2,'0')}-${min.getDate()}`
+      const maxDate = `${max.getFullYear()}-${String(max.getMonth()).padStart(2,'0')}-${max.getDate()}`
+      setMinMaxVigencia({
+        min: minDate,
+        max: maxDate
+      })      
+      
+    }
+    dataVigencia()
   },[])
  
 
@@ -79,7 +94,7 @@ function CriarCotacao() {
   function limparForm(event){
     
     event.preventDefault()
-    setUsuario({
+    setCotacao({
       cpf:''
     })
 
@@ -89,51 +104,74 @@ function CriarCotacao() {
     return <option key={item._id} value={item._id} > {item.nome}</option>
   })
 
+  const descricaoCobertura = (item) => {
+    return coberturas.map((item) => cotacao.cobertura === item._id ? <p> {item.descricao} </p> : console.log(`itemID ${item._id}, cobertura cotacao ${cotacao.cobertura}`))
+  }
+
 
 
   function setIDCobertura(evento){
     const coberturaID = evento
-    coberturas.map((item) => coberturaID === item._id ? setUsuario({...usuario, nomeCobertura: item.nome, cobertura: coberturaID}) : console.log("nao encontrou") )
-
+    coberturas.map((item) => coberturaID === item._id ? 
+    setCotacao({...cotacao, nomeCobertura: item.nome, cobertura: coberturaID}) : 
+    "" )
+    descricaoCobertura(cotacao.cobertura)
   }
 
 
 
   function postCotacao(){
+    //funcao assincrona
     http
     .post('/cotacoes/', {
-      //nome banco  :  nome usuario
-      nome: usuario.nome,
-      n_cotacao: usuario.n_cotacao,
-      cpf: usuario.cpf,
-      terminoVigencia: usuario.terminoVigencia,
-      valorRisco: usuario.valorRisco,
-      cobertura: usuario.cobertura,
+      //posso passasro obj somente "cotacao"
+      //nome banco  :  nome cotacao
+      nome: cotacao.nome,
+      n_cotacao: cotacao.n_cotacao,
+      cpf: cotacao.cpf,
+      terminoVigencia: cotacao.terminoVigencia,
+      valorRisco: cotacao.valorRisco,
+      cobertura: cotacao.cobertura,
 
     })
     .then(() => console.log('cotacao postada'));
   }
-  function saveLocalStorage(){
 
-    const storaged = JSON.parse(localStorage.getItem('proposta'))
-    let dados = localStorage.getItem('proposta') !== null ? storaged : [] 
-    dados.push(usuario)
-    localStorage.setItem('proposta', JSON.stringify(dados))
-    console.log(usuario.n_cotacao)
-    localStorage.setItem('n_cotacao', JSON.stringify(usuario.n_cotacao))
+  function setCpf(event){
+    // const str = event.target.value
+    const somenteNumeros = event.target.value.replace(/[^0-9]/g, '')
+    setCotacao({
+      ...cotacao,
+      cpf: somenteNumeros
+    })
+  
+  }
+  function saveLocalStorage(){
+    localStorage.setItem('n_cotacao', JSON.stringify(cotacao.n_cotacao))
 
   }
   function enviarForm(event){
     event.preventDefault()
-    // console.log(usuario)
-    editCotacao()
+    // editCotacao()
     saveLocalStorage()
-    postCotacao()
+    console.log(cotacao)
+    // postCotacao()
   }
 
+  if(loading){
+    return(
+      <Container maxWidth="lg">
+        <>
+          <Typography component='h1' variant='h5' textAlign='center'>
+              Loading
+          </Typography>
+        </>
+      </Container>
+    )
+  }
   return (
     <Container maxWidth="lg">
-      <Paper>
+      <>
 
       <Typography component='h1' variant='h5' textAlign='center'>
           Formulario de Cotação
@@ -145,7 +183,7 @@ function CriarCotacao() {
         
         <div className="flex flex-centro">
         <p className="m10"> Número da cotação:</p>
-        <span className="num-cotacao"> {usuario.n_cotacao} </span>
+        <span className="num-cotacao"> {cotacao.n_cotacao} </span>
         </div>
 
         <label htmlFor="nome" className="labelTexto" >Nome</label>
@@ -154,35 +192,50 @@ function CriarCotacao() {
           name="nome" 
           className="campoTexto w100" 
           placeholder="ex.: José Santos Silva" 
-          value={usuario.nome}
-          onChange={(event) => setUsuario({...usuario, nome: event.target.value})}   
+          value={cotacao.nome}
+          onChange={(event) => setCotacao({...cotacao, nome: event.target.value})}   
           required 
         />    
         
         <label htmlFor="cpf" className="labelTexto">CPF</label>
-        <CpfMask 
-          value={usuario.cpf} 
-          onChange={(event) => setUsuario({...usuario, cpf: event.target.value})}   
+        {/* <CpfMask 
+          value={cotacao.cpf} 
+          onChange={(event) => setCotacao({...cotacao, cpf: event.target.value})}   
+        /> */}
+
+        <input 
+          type="text" 
+          minLength={11}
+          maxLength={11}
+          onChange={(evento) => setCpf(evento)} 
+          className="campoTexto w30" 
+          placeholder="ex.: 123.456.789-99"
+     
         />
 
         <label htmlFor="inicioVigencia" className="labelTexto">Início da Vigência</label>
-        <p className="campoTexto w30">{usuario.inicioVigencia}</p>
+        <p className="campoTexto w30">{cotacao.inicioVigencia}</p>
 
         <label htmlFor="terminoVigencia" className="labelTexto">Termino da Vigência</label>
-        <TerminoVigencia 
-          value={usuario.terminoVigencia} 
-          onChange={(event) => setUsuario({...usuario, terminoVigencia: event.target.value})} 
-          placeholder="ex R$10.000,00" 
-        />
-
+        <input 
+          type="date" 
+          className="campoTexto w30" 
+          value={cotacao.terminoVigencia} 
+          onChange={(event) => setCotacao({...cotacao, terminoVigencia: event.target.value})} 
+          min={minMaxVigencia.min} 
+          max={minMaxVigencia.max}
+          
+          />
+        
         <label htmlFor="valorRisco" className="labelTexto" >Valor em risco</label>
         <input 
           type="number" 
           name="valorRisco" 
-          value={usuario.valorRisco} 
-          onChange={(event) => setUsuario({...usuario, valorRisco: event.target.value})} 
+          value={cotacao.valorRisco} 
+          onChange={(event) => setCotacao({...cotacao, valorRisco: event.target.value})} 
           className="campoTexto w30" 
-          min="5000" max="1000000"
+          min="5000.00" max="1000000.00"
+          step="0.01"
           placeholder="ex.: R$10.000,00" 
           required 
         />
@@ -190,12 +243,13 @@ function CriarCotacao() {
         <label htmlFor="cobertura" className="labelTexto" >Tipo da cobertura</label>
         <select
          className="campoTexto w70"
-         value={usuario.cobertura} 
+         value={cotacao.cobertura} 
          onChange={(e) => setIDCobertura(e.target.value)}
          required
         >
           <option defaultValue >Selecione a cobertura</option>
           {coberturaMap}
+          {descricaoCobertura}
 
         </select>
 
@@ -203,13 +257,23 @@ function CriarCotacao() {
 
       {/* Proposta */}
 
+            <Link 
+              to={{
+                pathname: "/propostas",
+                search: `${cotacao.n_cotacao}`,
+              }}
+            >
+              Elaborar proposta
+            </Link>
         <div className="container-btn">
           <button className="btn-limpar" onClick={(event) => limparForm(event)} >Limpar</button>
-          <button className="btn-elaborar" type="submit" >Elaborar proposta</button>
+          <button className="btn-elaborar" type="submit" >
+
+          </button>
         </div>
       </form>
 
-      </Paper>
+      </>
     </Container>
   );
 }

@@ -6,12 +6,13 @@ function ItemProposta(props) {
   const idCobertura = props.info.cobertura
   const [coberturas, setCoberturas] = useState([])
   const [nomeCobertura, setNomeCobertura] = useState('')
+  console.log(props.info)
+  console.log(props.info.nome)
 
   useEffect(()=>{
     const getCoberturas = async () => {
       try{
         const {data} = await http.get('coberturas')
-        console.log(data)
         setCoberturas(data);
       }catch(error){
         console.error(error)
@@ -23,7 +24,6 @@ function ItemProposta(props) {
   },[])
 
   function getNomeCobertura(){
-    console.log(`ID cobertura: ${idCobertura}`)
     coberturas.map((item) =>{
       return idCobertura === item._id ?
         setNomeCobertura(item.nome) :
@@ -39,7 +39,7 @@ function ItemProposta(props) {
         </div>
         <div className="campoCotacao">
           <p>Nome: </p>
-          <p className="valorCotacao"> {props.info.nome} </p> 
+          <p className="valorCotacao"> {props.info.nome}  </p> 
         </div>
         <div className="campoCotacao">
           <p>CPF:</p>
