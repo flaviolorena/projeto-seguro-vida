@@ -1,6 +1,8 @@
 import { Container , Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import BuscaCobertura from '../componentes/buscaCobertura'
+
 
 import http from '../servicos/http.js'
 
@@ -105,22 +107,21 @@ function CriarCotacao() {
     return <option key={item._id} value={item._id} > {item.nome}</option>
   })
 
-  const descricaoCobertura = (item) => {
-    return coberturas.map((item) => cotacao.cobertura === item._id ? <p> {item.descricao} </p> : console.log(`itemID ${item._id}, cobertura cotacao ${cotacao.cobertura}`))
-  }
-
-
-
   function setIDCobertura(evento){
     const coberturaID = evento
     coberturas.map((item) => coberturaID === item._id ? 
     setCotacao({...cotacao, nomeCobertura: item.nome, cobertura: coberturaID}) : 
     "" )
-    descricaoCobertura(cotacao.cobertura)
+
   }
 
-
-
+  function descricaoCobertura(id){
+    const coberturaID = id
+    let desc = ''
+    coberturas.map((item) => coberturaID === item._id ? 
+    desc = item.descricao : '' )
+    return desc
+  }
   function postCotacao(){
     //funcao assincrona
     http
@@ -201,10 +202,7 @@ function CriarCotacao() {
         />    
         
         <label htmlFor="cpf" className="labelTexto">CPF</label>
-        {/* <CpfMask 
-          value={cotacao.cpf} 
-          onChange={(event) => setCotacao({...cotacao, cpf: event.target.value})}   
-        /> */}
+        
 
         <input 
           type="text" 
@@ -252,9 +250,12 @@ function CriarCotacao() {
         >
           <option defaultValue >Selecione a cobertura</option>
           {coberturaMap}
-          {descricaoCobertura}
 
         </select>
+          <p className="descCobertura">
+            {descricaoCobertura(cotacao.cobertura)}
+          </p>  
+        
 
       </fieldset>
 
@@ -264,14 +265,7 @@ function CriarCotacao() {
         <div className="container-btn">
           <button className="btn-limpar" onClick={(event) => limparForm(event)} >Limpar</button>
           <button className="btn-elaborar" type="submit" >Elaborar proposta</button>
-            {/* <Link 
-              to={{
-                pathname: "/propostas",
-                search: `${cotacao.n_cotacao}`,
-              }}
-            >
-              Proposta Link 
-            </Link> */}
+ 
              
         </div>
       </form>

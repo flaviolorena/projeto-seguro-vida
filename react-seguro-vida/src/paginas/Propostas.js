@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Container, Typography } from "@mui/material";
 import http from '../servicos/http.js'
+import { useNavigate } from "react-router-dom";
+
 import ItemProposta from '../componentes/ItemProposta'
 
 
@@ -9,50 +11,51 @@ function Propostas() {
   //estado nao esta setando no tempo correto
   // const [n_cotacao, setN_cotacao] = useState(null)
 
-  let n_cotacao = null
+  const navigate = useNavigate()
+
   const [proposta, setProposta] = useState({})
   const [loading, setLoading] = useState(true)
+  let n_cotacao = window.location.search.replace('?','')
   
-  // useEffect(()=>{
-  //   console.log(`cotacao em state: ${n_cotacao}`)
-  // },[])
 
   useEffect(() =>{
-    getNomeCobertura()
-  },[])
-
-  const getNomeCobertura = async () => {
-    try {
-      console.log(window.location.search)
-      // await setN_cotacao((window.location.search).replace('?',''))
-      n_cotacao = window.location.search.replace('?','')
-      console.log(n_cotacao)
-      getProposta()
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  // function getNomeCobertura(){
-  //   const numCotacao = window.location.search
-  //   setN_cotacao(numCotacao)
-  //   console.log(`recebido num cotacao: ${n_cotacao}`)
-  // }
+    getProposta()    
+  },[loading])
 
   const getProposta = async () => {
     try{
       const {data} = await http.get(`propostas/busca/?n_proposta=${n_cotacao}`)
-      console.log(data[0])
       setProposta(data[0]);
+      console.log(data[0].valorPago)
+      console.log(data[0])
       setLoading(false)
     }catch(error){
       console.error(error)
     }
   };  
 
+  function postProposta(){
+    http
+    .post('/propostas/', {
+      n_proposta:proposta.n_proposta,
+      nome:proposta.nome,
+      cpf:proposta.cpf,
+      inicioVigencia:proposta.inicioVigencia,
+      terminoVigencia:proposta.terminoVigencia,
+      valorRisco:proposta.valorRisco,
+      valorPago:proposta.valorPago,
+      qtParcelas:proposta.qtParcelas ,
+      cobertura:proposta.cobertura
+    })
+    .then(() => console.log('proposta postada'));
+  }
+
   function enviarProposta(event){
     event.preventDefault()
     console.log(proposta)
+    postProposta()
+    navigate(`/apolices/?${proposta.n_proposta}`);
+
   }
 
 
@@ -93,13 +96,14 @@ function Propostas() {
           <form className="form" onSubmit={enviarProposta} >
             <fieldset id="pagamento-fieldset" className="cotacao-fieldset" >
             <legend>Forma de pagamento</legend>
-            <p>Valor a vista: <strong>R${proposta.valorPago}</strong> </p>
+            {/* <p>Valor a ser pago: <strong>R${proposta.valorPago}</strong> </p> */}
             <p>Valor parcelado:</p>
               <select 
                 className="campoTexto w50" 
                 value={proposta.qtParcelas} 
                 onChange={(evento) => setProposta({...proposta, qtParcelas: Number(evento.target.value)})}
               >
+                <option defaultValue >Selecione a forma de pagamento</option>
                 <option value="0" > A vista: R$ {proposta.valorPago} </option>
                 <option value="1" > Parcelado 1x: R$ {calcParcelas(proposta.valorPago,1)} </option>
                 <option value="2" > Parcelado 2x: R$ {calcParcelas(proposta.valorPago,2)} </option>

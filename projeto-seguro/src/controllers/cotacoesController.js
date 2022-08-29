@@ -38,11 +38,11 @@ class CotacoesController{
       //4.1 salva os dados
         const cotac = await cotacao.save({ timestamps: { createdAt: true, updatedAt: false }})
 
-      //4.2 calcula o valor a ser pago
+      //4.2 calcular o valor a ser pago
 
       //4.3 cria let com os dados da cotacao
       let dadosNovaProposta = cotac.toJSON();
-        //insere o calculo do valor a ser pago na nova proposta
+        //calcula o valor a ser pago na nova proposta
       dadosNovaProposta.valorPago = (cotacao.valorRisco * 0.05).toFixed(2);
       dadosNovaProposta.n_proposta = dadosNovaProposta.n_cotacao
       delete dadosNovaProposta.n_cotacao

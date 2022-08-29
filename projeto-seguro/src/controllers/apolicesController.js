@@ -7,11 +7,7 @@ class ApolicesController {
 		
 		try {
 			const apolice = await apolices.find()
-				.populate({
-					path:'proposta',
-					model: 'proposta'
-				})
-				.exec()
+
 			res.status(200).json(apolice);
 
 		} catch (err) {
@@ -64,6 +60,18 @@ class ApolicesController {
 			res.status(500).json({ message: `Falha ao deletar - ${err.message}  ` });
 		}
 	};
+	static listarApolicePorNum = async (req,res) =>{
+    try{
+      const numeroApolice = req.query.n_apolice
+      const dadoApolice = await apolices.find({"n_apolice": numeroApolice}, )
+      res.status(200).send(dadoApolice)
+    }
+    
+    catch(err){
+      res.status(400).json({'message': `Apolice não encontrada não encontrado - ${err.message}  `})
+    }
+
+  }
 }
 
 export default ApolicesController;

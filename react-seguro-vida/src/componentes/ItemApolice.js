@@ -1,49 +1,62 @@
-import { Paper } from "@mui/material";
+import { Container, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import BuscaCobertura from '../componentes/buscaCobertura'
 import http from '../servicos/http.js'
 
-function ItemProposta(props) {
+function ItemApolice(props) {
+  // console.log(props)
   const idCobertura = props.info.cobertura
   const [coberturas, setCoberturas] = useState([])
-  const [nomeCobertura, setNomeCobertura] = useState('')
+  const [loading, setLoading] = useState(true)
 
 
   useEffect(()=>{
     const getCoberturas = async () => {
       try{
         const {data} = await http.get('coberturas')
-        setCoberturas(data);
+        setCoberturas(data);    
+        console.log(coberturas)
+        setLoading(false)
       }catch(error){
         console.error(error)
       }
     };  
     getCoberturas()
-    getNomeCobertura()
 
-    
   },[])
 
-  function getNomeCobertura(){
-    coberturas.map((item) =>{
-      return idCobertura === item._id ?
-        setNomeCobertura(item.nome) :
-        console.error("erro get nome")
-    })
-  }
+ 
+
   const dataFormat = (data) =>{
     let dataObj = new Date(data);
     return `${dataObj.getDate()}/${dataObj.getMonth()+1}/${dataObj.getFullYear()}`
 
   } 
 
+  if(loading){
+    return(
+      <Container maxWidth="lg">
+        <>
+
+        <Typography component='h1' variant='h5' textAlign='center'>
+            Carregando...
+        </Typography>
+        </>
+      </Container>
+
+    )
+  }
 
 
   return (
     <Paper className="item-cotacoes">
         <div className="campoCotacao">
           <p>Número da proposta: </p>
-          <p className="valorCotacao"> {props.info.n_proposta} </p> 
+          <p className="valorCotacao"> {props.info.n_apolice} </p> 
+        </div>        
+        <div className="campoCotacao">
+          <p>Código da apólice: </p>
+          <p className="valorCotacao"> {props.info.hash} </p> 
         </div>
         <div className="campoCotacao">
           <p>Nome: </p>
@@ -64,7 +77,20 @@ function ItemProposta(props) {
         <div className="campoCotacao">
           <p>Valor de risco:</p>
           <p className="valorCotacao"> R${props.info.valorRisco} </p> 
-        </div>           
+        </div>             
+        <div className="campoCotacao">
+          <p>Valor a ser pago:</p>
+          <p className="valorCotacao"> R${ props.info.valorPago} </p> 
+        </div>         
+        <div className="campoCotacao">
+          <p>Forma de pagamento:</p>
+          {
+            props.info.qtParcelas === 0 ?
+            <p className="valorCotacao"> À vista </p> :
+
+            <p className="valorCotacao"> {props.info.qtParcelas} parcelas de R${ props.info.valorPago / props.info.qtParcelas} </p> 
+          }
+        </div> 
 
         <BuscaCobertura info={props.info.cobertura} />
 
@@ -74,4 +100,4 @@ function ItemProposta(props) {
   );
 }
 
-export default ItemProposta;
+export default ItemApolice;

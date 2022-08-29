@@ -1,31 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { Container, Paper, Typography } from "@mui/material";
+import http from '../servicos/http.js'
 
-import ItemCotacao from "../componentes/ItemCotacao";
+import ItemApolice from "../componentes/ItemApolice";
 
 function Cotacoes() {
-  const [storaged, setStoraged] = useState([])
-  
+  const [apolices, setApolices] = useState([])
+  const [loading, setLoading] = useState(true)
+
   const getData = () =>{
-    const data = JSON.parse(localStorage.getItem('proposta'))
-    setStoraged(data)
-    console.log(storaged)
+    const getApolices = async () => {
+      try{
+        const {data} = await http.get('apolices/')
+        setApolices(data);
+        setLoading(false)
+      }catch(error){
+        console.error(error)
+      }
+    }
+    getApolices()
   }
 
   useEffect(()=>{
     getData()
   },[])
- 
- 
-  const itemCotacao = storaged.map((item) => <ItemCotacao info={item}/>)
+  const itemCotacao = apolices.map((item) => <ItemApolice info={item}/>)
 
+  
+
+if(loading){
+  return (
+    <Container maxWidth="lg">
+      <Paper>
+
+      <Typography component='h1' variant='h5' textAlign='center'>
+          Carregando...
+      </Typography>
+
+      </Paper>
+    </Container>
+  );
+
+}
 
   return (
     <Container maxWidth="lg">
       <Paper>
 
       <Typography component='h1' variant='h5' textAlign='center'>
-          Lista de cotações
+          Lista de Apolices
       </Typography>
 
       <div className="lista-cotacoes">

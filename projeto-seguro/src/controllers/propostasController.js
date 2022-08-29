@@ -1,3 +1,4 @@
+import apolices from '../models/Apolice.js';
 import propostas from '../models/Proposta.js';
 
 class PropostasController{
@@ -5,11 +6,10 @@ class PropostasController{
   static listarPropostas = (req,res) =>{
     //qual campo deve ser populado
     propostas.find()
-      .populate('n_proposta')
+      // .populate('n_proposta')
       .exec((err, propostas) =>{
         res.status(200).json(propostas);
       })
-
   }
 
   static listarPropostasPorId = (req,res) =>{
@@ -25,15 +25,51 @@ class PropostasController{
 
   } 
 
-  static cadastrarProposta = (req, res) =>{
-    let proposta = new propostas(req.body);
-    proposta.save((err) => {
-      if(err){
-        res.status(500).send({message: `${err.message} - falha ao cadastrar`})
-      }else{
-        res.status(201).send(proposta.toJSON())
+  static cadastrarProposta = async (req, res) =>{
+    function geraHash() {
+      var char = '';
+      var num = '';
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      var numbers = '0123456789'
+      var charactersLength = characters.length;
+      var numbersLength = numbers.length;
+      for ( var i = 0; i < 6; i++ ) {
+        char += characters.charAt(Math.floor(Math.random() * charactersLength));
       }
-    })
+
+      for ( var i = 0; i < 4; i++ ) {
+        num += numbers.charAt(Math.floor(Math.random() * numbersLength));
+      }
+      return char + num;
+     
+    }
+
+    try {
+      let proposta = new propostas(req.body);
+      console.log(`recebido do form ${proposta}`)
+      const saveProposta = await proposta.save();
+      let dadosNovaApolice = saveProposta.toJSON()
+      dadosNovaApolice.n_apolice = dadosNovaApolice.n_proposta
+
+      dadosNovaApolice.hash = geraHash()
+
+      console.log(dadosNovaApolice)
+      delete dadosNovaApolice.n_proposta
+
+      let apolice = new apolices(dadosNovaApolice)
+      const novaApolice = await apolice.save()
+
+      res.status(201).send(novaApolice)
+    } catch (err) {
+      res.status(500).json({'message': `${err.message} falha ao cadastrar proposta`})
+
+    }
+    // proposta.save((err) => {
+    //   if(err){
+    //     res.status(500).send({message: `${err.message} - falha ao cadastrar`})
+    //   }else{
+    //   }
+    // })
   }
 
   static atualizarProposta = (req,res) => {
