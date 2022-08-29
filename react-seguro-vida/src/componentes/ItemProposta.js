@@ -6,8 +6,7 @@ function ItemProposta(props) {
   const idCobertura = props.info.cobertura
   const [coberturas, setCoberturas] = useState([])
   const [nomeCobertura, setNomeCobertura] = useState('')
-  console.log(props.info)
-  console.log(props.info.nome)
+
 
   useEffect(()=>{
     const getCoberturas = async () => {
@@ -20,6 +19,7 @@ function ItemProposta(props) {
     };  
     getCoberturas()
     getNomeCobertura()
+
     
   },[])
 
@@ -30,12 +30,36 @@ function ItemProposta(props) {
         console.error("erro get nome")
     })
   }
+  const dataFormat = (data) =>{
+    let dataObj = new Date(data);
+    return `${dataObj.getDate()}/${dataObj.getMonth()+1}/${dataObj.getFullYear()}`
+
+  } 
+  // function dataFormat(data){
+  //   // console.log(data)
+  //   let dataObj = new Date(data);
+  //   console.log(dataObj.getMonth())
+  //   return `${dataObj.getDate()}/${dataObj.getMonth()}/${dataObj.getFullYear()}`
+
+  // }
+
+  function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+
 
   return (
     <Paper className="item-cotacoes">
         <div className="campoCotacao">
           <p>Número da proposta: </p>
-          <p className="valorCotacao"> {props.info.n_cotacao} </p> 
+          <p className="valorCotacao"> {props.info.n_proposta} </p> 
         </div>
         <div className="campoCotacao">
           <p>Nome: </p>
@@ -47,24 +71,25 @@ function ItemProposta(props) {
         </div>
         <div className="campoCotacao">
           <p>Início de vigência do seguro:</p>
-          <p className="valorCotacao"> {props.info.inicioVigencia} </p> 
+          <p className="valorCotacao"> {dataFormat(props.info.inicioVigencia)} </p> 
         </div>        
         <div className="campoCotacao">
           <p>Término de vigência do seguro:</p>
-          <p className="valorCotacao"> {props.info.terminoVigencia} </p> 
+          <p className="valorCotacao"> {dataFormat(props.info.terminoVigencia)} </p> 
         </div>
         <div className="campoCotacao">
           <p>Valor de risco:</p>
           <p className="valorCotacao"> R${props.info.valorRisco} </p> 
         </div>           
-        <div className="campoCotacao">
-          <p>Valor a ser pago pelo segurado:</p>
-          <p className="valorCotacao"> R${props.info.valorPagoSegurado} </p> 
-        </div>   
+
         <div className="campoCotacao">
           <p>Tipo da cobertura:</p>
           <p className="valorCotacao"> {nomeCobertura} </p> 
+          {/* <p className="valorCotacao"> {makeid(8)}</p>  */}
+          
         </div>
+
+
     </Paper>
 
   );
