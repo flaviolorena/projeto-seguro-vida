@@ -84,7 +84,6 @@ function CriarCotacao() {
     }
     dataVigencia()
   },[])
- 
 
   function editCotacao(){
     const novoContador = contador + 1
@@ -93,15 +92,6 @@ function CriarCotacao() {
     })
   }
 
-
-  function limparForm(event){
-    
-    event.preventDefault()
-    setCotacao({
-      cpf:''
-    })
-
-  }
 
   const coberturaMap = coberturas.map((item) => {
     return <option key={item._id} value={item._id} > {item.nome}</option>
@@ -157,9 +147,7 @@ function CriarCotacao() {
     event.preventDefault()
     editCotacao()
     saveLocalStorage()
-    console.log(cotacao)
     postCotacao()
-    // navigate(`/propostas/?${cotacao.n_cotacao}`);
   }
 
   if(loading){
@@ -198,7 +186,7 @@ function CriarCotacao() {
           placeholder="ex.: José Santos Silva" 
           value={cotacao.nome}
           onChange={(event) => setCotacao({...cotacao, nome: event.target.value})}   
-          required 
+          required
         />    
         
         <label htmlFor="cpf" className="labelTexto">CPF</label>
@@ -211,6 +199,7 @@ function CriarCotacao() {
           onChange={(evento) => setCpf(evento)} 
           className="campoTexto w30" 
           placeholder="ex.: 123.456.789-99"
+          required
      
         />
 
@@ -225,6 +214,7 @@ function CriarCotacao() {
           onChange={(event) => setCotacao({...cotacao, terminoVigencia: event.target.value})} 
           min={minMaxVigencia.min} 
           max={minMaxVigencia.max}
+          required
           
           />
         
@@ -232,7 +222,7 @@ function CriarCotacao() {
         <input 
           type="number" 
           name="valorRisco" 
-          value={cotacao.valorRisco} 
+          value={cotacao.valorRisco == null ? '' : cotacao.valorRisco } 
           onChange={(event) => setCotacao({...cotacao, valorRisco: event.target.value})} 
           className="campoTexto w30" 
           min="5000.00" max="1000000.00"
@@ -248,7 +238,7 @@ function CriarCotacao() {
          onChange={(e) => setIDCobertura(e.target.value)}
          required
         >
-          <option defaultValue >Selecione a cobertura</option>
+          <option hidden >Selecione a cobertura</option>
           {coberturaMap}
 
         </select>
@@ -256,16 +246,10 @@ function CriarCotacao() {
             {descricaoCobertura(cotacao.cobertura)}
           </p>  
         
-
       </fieldset>
 
-      {/* Proposta */}
-
-            
         <div className="container-btn">
-          <button className="btn-limpar" onClick={(event) => limparForm(event)} >Limpar</button>
           <button className="btn-elaborar" type="submit" >Elaborar proposta</button>
- 
              
         </div>
       </form>

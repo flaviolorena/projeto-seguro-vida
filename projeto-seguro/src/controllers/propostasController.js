@@ -46,14 +46,12 @@ class PropostasController{
 
     try {
       let proposta = new propostas(req.body);
-      console.log(`recebido do form ${proposta}`)
       const saveProposta = await proposta.save();
       let dadosNovaApolice = saveProposta.toJSON()
       dadosNovaApolice.n_apolice = dadosNovaApolice.n_proposta
 
       dadosNovaApolice.hash = geraHash()
 
-      console.log(dadosNovaApolice)
       delete dadosNovaApolice.n_proposta
 
       let apolice = new apolices(dadosNovaApolice)

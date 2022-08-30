@@ -46,7 +46,6 @@ class CotacoesController{
       dadosNovaProposta.valorPago = valorPago;
       dadosNovaProposta.n_proposta = dadosNovaProposta.n_cotacao
 
-      console.log(dadosNovaProposta.valorPago)
       delete dadosNovaProposta.n_cotacao
 
       let proposta = new propostas(dadosNovaProposta);

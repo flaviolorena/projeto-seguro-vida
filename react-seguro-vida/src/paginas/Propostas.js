@@ -21,21 +21,23 @@ function Propostas() {
   useEffect(() =>{
     const getProposta = async () => {
       try{
-        console.log(n_cotacao)
         const {data} = await http.get(`propostas/busca/?n_proposta=${n_cotacao}`)
         setProposta(data[0]);
-        console.log(proposta)
       }catch(error){
         console.error(error)
       }
     };  
     getProposta()
     setLoading(false)
-    console.log(proposta)
 
   },[setProposta, loading])
 
 
+  function setPagamento(evento){
+    const parcelas = evento.target.value
+    setProposta({...proposta, qtParcelas: parcelas})
+
+  }
 
   function postProposta(){
     http
@@ -55,9 +57,7 @@ function Propostas() {
 
   function enviarProposta(event){
     event.preventDefault()
-    console.log(proposta)
     postProposta()
-    // navigate(`/apolices/?${proposta.n_proposta}`);
 
   }
 
@@ -103,9 +103,9 @@ function Propostas() {
               <select 
                 className="campoTexto w50" 
                 value={proposta.qtParcelas}
-                onChange={(evento) => setProposta({...proposta, qtParcelas: Number(evento.target.value)})}
+                onChange={(evento) => setPagamento(evento) }
               >
-                <option defaultValue >Selecione a forma de pagamento</option>
+                <option value="default" hidden >Selecione a forma de pagamento</option>
                 <option value="0" > A vista: R$ {proposta.valorPago} </option>
                 <option value="1" > Parcelado 1x: R$ {calcParcelas(proposta.valorPago,1)} </option>
                 <option value="2" > Parcelado 2x: R$ {calcParcelas(proposta.valorPago,2)} </option>

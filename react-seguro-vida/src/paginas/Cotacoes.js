@@ -7,6 +7,7 @@ import ItemApolice from "../componentes/ItemApolice";
 function Cotacoes() {
   const [apolices, setApolices] = useState([])
   const [loading, setLoading] = useState(true)
+  const [semApolice, setSemApolice] = useState(true)
 
   const getData = () =>{
     const getApolices = async () => {
@@ -14,6 +15,7 @@ function Cotacoes() {
         const {data} = await http.get('apolices/')
         setApolices(data);
         setLoading(false)
+
       }catch(error){
         console.error(error)
       }
@@ -24,8 +26,8 @@ function Cotacoes() {
   useEffect(()=>{
     getData()
   },[])
-  const itemCotacao = apolices.map((item) => <ItemApolice info={item}/>)
 
+  const itemCotacao = apolices.map((item) => <ItemApolice key={item.n_apolice} info={item}/>).reverse()
   
 
 if(loading){
@@ -54,6 +56,7 @@ if(loading){
       <div className="lista-cotacoes">
         <div className="item-cotacoes">
           {itemCotacao}
+      {itemCotacao.length === 0 && <p>Você ainda não tem apolices para exibir</p>}
         </div>
       </div>
 

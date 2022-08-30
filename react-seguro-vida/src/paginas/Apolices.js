@@ -19,10 +19,8 @@ function Apolices() {
     const getProposta = async () => {
       try{
         const {data} = await http.get(`apolices/busca/?n_apolice=${n_apolice}`)
-        console.log(data[0])
         setApolice(data[0]);
         
-        console.log(apolice)
         setLoading(false)
       }catch(error){
         console.error(error)
@@ -30,7 +28,6 @@ function Apolices() {
     };  
     getProposta()
     setLoading(false)
-    console.log(n_apolice)
     
   },[setApolice, loading])
 

@@ -31,7 +31,7 @@ function ItemApolice(props) {
     coberturas.map((item) =>{
       return idCobertura === item._id ?
         setNomeCobertura(item.nome) :
-        console.error("erro get nome")
+        ""
     })
   }
 
@@ -39,7 +39,7 @@ function ItemApolice(props) {
     coberturas.map((item) =>{
       return idCobertura === item._id ?
         setDescricaoCobertura(item.descricao) :
-        console.error("erro get nome")
+        ""
     })
   }
 

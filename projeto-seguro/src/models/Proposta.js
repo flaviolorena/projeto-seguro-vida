@@ -9,8 +9,8 @@ const propostaSchema = new mongoose.Schema(
     inicioVigencia: { type: Date},
     terminoVigencia: {type: Date},
     valorRisco: {type: Number, min: 5000, max: 1000000},
-    valorPago: {type: Number, default: 0},
-    // qtParcelas: {type: Number, default: 0},
+    valorPago: {type: Number},
+    qtParcelas: {type: Number},
     cobertura:{type: mongoose.Schema.Types.ObjectId, ref: 'coberturas'},
     
   }

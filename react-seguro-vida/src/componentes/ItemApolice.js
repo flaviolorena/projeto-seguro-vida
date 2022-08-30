@@ -4,8 +4,6 @@ import BuscaCobertura from '../componentes/buscaCobertura'
 import http from '../servicos/http.js'
 
 function ItemApolice(props) {
-  // console.log(props)
-  const idCobertura = props.info.cobertura
   const [coberturas, setCoberturas] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -15,7 +13,6 @@ function ItemApolice(props) {
       try{
         const {data} = await http.get('coberturas')
         setCoberturas(data);    
-        console.log(coberturas)
         setLoading(false)
       }catch(error){
         console.error(error)
@@ -25,7 +22,10 @@ function ItemApolice(props) {
 
   },[])
 
- 
+ function calcValorParcela(){
+  const valor = props.info.valorPago / props.info.qtParcelas
+  return valor.toFixed(2)
+ }
 
   const dataFormat = (data) =>{
     let dataObj = new Date(data);
@@ -88,7 +88,7 @@ function ItemApolice(props) {
             props.info.qtParcelas === 0 ?
             <p className="valorCotacao"> À vista </p> :
 
-            <p className="valorCotacao"> {props.info.qtParcelas} parcelas de R${ props.info.valorPago / props.info.qtParcelas} </p> 
+            <p className="valorCotacao"> {props.info.qtParcelas} parcelas de R${calcValorParcela()} </p> 
           }
         </div> 
 
