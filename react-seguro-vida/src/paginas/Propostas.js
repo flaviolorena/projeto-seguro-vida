@@ -19,20 +19,23 @@ function Propostas() {
   
 
   useEffect(() =>{
-    getProposta()    
-  },[loading])
+    const getProposta = async () => {
+      try{
+        console.log(n_cotacao)
+        const {data} = await http.get(`propostas/busca/?n_proposta=${n_cotacao}`)
+        setProposta(data[0]);
+        console.log(proposta)
+      }catch(error){
+        console.error(error)
+      }
+    };  
+    getProposta()
+    setLoading(false)
+    console.log(proposta)
 
-  const getProposta = async () => {
-    try{
-      const {data} = await http.get(`propostas/busca/?n_proposta=${n_cotacao}`)
-      setProposta(data[0]);
-      console.log(data[0].valorPago)
-      console.log(data[0])
-      setLoading(false)
-    }catch(error){
-      console.error(error)
-    }
-  };  
+  },[setProposta, loading])
+
+
 
   function postProposta(){
     http
@@ -47,14 +50,14 @@ function Propostas() {
       qtParcelas:proposta.qtParcelas ,
       cobertura:proposta.cobertura
     })
-    .then(() => console.log('proposta postada'));
+    .then(() => navigate(`/apolices/?${proposta.n_proposta}`));
   }
 
   function enviarProposta(event){
     event.preventDefault()
     console.log(proposta)
     postProposta()
-    navigate(`/apolices/?${proposta.n_proposta}`);
+    // navigate(`/apolices/?${proposta.n_proposta}`);
 
   }
 
@@ -89,18 +92,17 @@ function Propostas() {
             Propostas
         </Typography>
         <ItemProposta info={proposta} />
-        
         {/* Pagamento */}
 
         <div>
           <form className="form" onSubmit={enviarProposta} >
             <fieldset id="pagamento-fieldset" className="cotacao-fieldset" >
             <legend>Forma de pagamento</legend>
-            {/* <p>Valor a ser pago: <strong>R${proposta.valorPago}</strong> </p> */}
+            <p>Valor a ser pago: <strong>R${proposta.valorPago}</strong> </p>
             <p>Valor parcelado:</p>
               <select 
                 className="campoTexto w50" 
-                value={proposta.qtParcelas} 
+                value={proposta.qtParcelas}
                 onChange={(evento) => setProposta({...proposta, qtParcelas: Number(evento.target.value)})}
               >
                 <option defaultValue >Selecione a forma de pagamento</option>

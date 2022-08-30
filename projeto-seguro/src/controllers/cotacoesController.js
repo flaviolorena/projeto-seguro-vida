@@ -34,17 +34,19 @@ class CotacoesController{
   static cadastrarCotacao = async (req, res) =>{
     try{
       let cotacao = new cotacoes(req.body);
-      // let valorPago = (cotacao.valorRisco * 0.05).toFixed(2)
       //4.1 salva os dados
-        const cotac = await cotacao.save({ timestamps: { createdAt: true, updatedAt: false }})
-
+      const cotac = await cotacao.save({ timestamps: { createdAt: true, updatedAt: false }})
+      
       //4.2 calcular o valor a ser pago
+      let valorPago = (cotacao.valorRisco * 0.05).toFixed(2)
 
       //4.3 cria let com os dados da cotacao
       let dadosNovaProposta = cotac.toJSON();
         //calcula o valor a ser pago na nova proposta
-      dadosNovaProposta.valorPago = (cotacao.valorRisco * 0.05).toFixed(2);
+      dadosNovaProposta.valorPago = valorPago;
       dadosNovaProposta.n_proposta = dadosNovaProposta.n_cotacao
+
+      console.log(dadosNovaProposta.valorPago)
       delete dadosNovaProposta.n_cotacao
 
       let proposta = new propostas(dadosNovaProposta);

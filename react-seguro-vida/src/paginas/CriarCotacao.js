@@ -122,6 +122,7 @@ function CriarCotacao() {
     desc = item.descricao : '' )
     return desc
   }
+
   function postCotacao(){
     //funcao assincrona
     http
@@ -136,7 +137,7 @@ function CriarCotacao() {
       cobertura: cotacao.cobertura,
 
     })
-    .then(() => console.log('cotacao postada'));
+    .then(() => navigate(`/propostas/?${cotacao.n_cotacao}`));
   }
 
   function setCpf(event){
@@ -150,16 +151,15 @@ function CriarCotacao() {
   }
   function saveLocalStorage(){
     localStorage.setItem('n_cotacao', JSON.stringify(cotacao.n_cotacao))
-
   }
+
   function enviarForm(event){
     event.preventDefault()
     editCotacao()
     saveLocalStorage()
     console.log(cotacao)
     postCotacao()
-    navigate(`/propostas/?${cotacao.n_cotacao}`);
-
+    // navigate(`/propostas/?${cotacao.n_cotacao}`);
   }
 
   if(loading){

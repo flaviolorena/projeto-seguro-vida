@@ -16,26 +16,25 @@ function Apolices() {
   
   useEffect(() =>{
 
+    const getProposta = async () => {
+      try{
+        const {data} = await http.get(`apolices/busca/?n_apolice=${n_apolice}`)
+        console.log(data[0])
+        setApolice(data[0]);
+        
+        console.log(apolice)
+        setLoading(false)
+      }catch(error){
+        console.error(error)
+      }
+    };  
     getProposta()
     setLoading(false)
     console.log(n_apolice)
     
-    console.log(apolice)
-  },[])
+  },[setApolice, loading])
 
 
-  const getProposta = async () => {
-    try{
-      const {data} = await http.get(`apolices/busca/?n_apolice=${n_apolice}`)
-      console.log(data[0])
-      setApolice(data[0]);
-      
-      console.log(apolice)
-      setLoading(false)
-    }catch(error){
-      console.error(error)
-    }
-  };  
 
 
   if(loading){
