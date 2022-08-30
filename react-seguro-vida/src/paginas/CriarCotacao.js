@@ -13,7 +13,9 @@ function CriarCotacao() {
   const [coberturas, setCoberturas] = useState([])
   const [contador, setContador] = useState([])
   const [ minMaxVigencia , setMinMaxVigencia] = useState({})
+  const [temCpf, setTemCpf] = useState(false)
 
+  let btnElaborar = document.getElementById("bnt-elaborar")
 
   const [cotacao, setCotacao] = useState({
     n_cotacao: undefined,
@@ -85,6 +87,13 @@ function CriarCotacao() {
     dataVigencia()
   },[])
 
+  
+  useEffect(()=>{
+    validateForm()
+    existeCPF()
+  },[cotacao.cobertura, cotacao.cpf])
+
+
   function editCotacao(){
     const novoContador = contador + 1
     http.put(`/contadores/630671a2b3dfa66834b7a2f2/`, {
@@ -92,6 +101,41 @@ function CriarCotacao() {
     })
   }
 
+  function existeCPF(){
+    const getCpf = async () => {
+      try{
+        const {data} = await http.get(`apolices/cpf/?cpf=${cotacao.cpf}`)
+        if(data.length !== 0){
+          setTemCpf(true)
+        }else{
+          setTemCpf(false)
+        }
+      }catch(error){
+        console.error(error)
+      }
+    };
+    getCpf()
+    validateForm()
+
+  }
+
+
+
+  function validateForm(){
+    if(
+      cotacao.nome === '' ||
+      temCpf === true ||
+      cotacao.cpf.length !== 11 ||
+      cotacao.inicioVigencia === '' ||
+      cotacao.terminoVigencia === '' ||
+      cotacao.valorRisco === '' ||
+      cotacao.cobertura === '' 
+    ){
+      //
+    }else{
+      btnElaborar.removeAttribute('disabled')
+    }
+  }
 
   const coberturaMap = coberturas.map((item) => {
     return <option key={item._id} value={item._id} > {item.nome}</option>
@@ -145,8 +189,9 @@ function CriarCotacao() {
 
   function enviarForm(event){
     event.preventDefault()
-    editCotacao()
+    existeCPF()
     saveLocalStorage()
+    editCotacao()
     postCotacao()
   }
 
@@ -189,8 +234,7 @@ function CriarCotacao() {
           required
         />    
         
-        <label htmlFor="cpf" className="labelTexto">CPF</label>
-        
+        <label htmlFor="cpf" className="labelTexto">CPF</label>       
 
         <input 
           type="text" 
@@ -202,6 +246,8 @@ function CriarCotacao() {
           required
      
         />
+        {temCpf && <span className="avisoCpf">Este CPF já possui cadastro</span> }
+
 
         <label htmlFor="inicioVigencia" className="labelTexto">Início da Vigência</label>
         <p className="campoTexto w30">{cotacao.inicioVigencia}</p>
@@ -226,7 +272,7 @@ function CriarCotacao() {
           onChange={(event) => setCotacao({...cotacao, valorRisco: event.target.value})} 
           className="campoTexto w30" 
           min="5000.00" max="1000000.00"
-          step="0.01"
+          step="1"
           placeholder="ex.: R$10.000,00" 
           required 
         />
@@ -245,13 +291,14 @@ function CriarCotacao() {
           <p className="descCobertura">
             {descricaoCobertura(cotacao.cobertura)}
           </p>  
-        
-      </fieldset>
 
+        
         <div className="container-btn">
-          <button className="btn-elaborar" type="submit" >Elaborar proposta</button>
+          <button className="btn-elaborar" id="bnt-elaborar" disabled type="submit" >Elaborar proposta</button>
              
         </div>
+      </fieldset>
+
       </form>
 
       </>

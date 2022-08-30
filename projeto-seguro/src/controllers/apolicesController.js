@@ -72,6 +72,19 @@ class ApolicesController {
     }
 
   }
+	static listarApolicePorCPF = async (req,res) =>{
+    try{
+      const numeroCPF = req.query.cpf
+      const dadoCPF = await apolices.find({"cpf": numeroCPF},)
+			console.log(dadoCPF)
+      res.status(200).send(dadoCPF)
+    }
+
+    catch(err){
+      res.status(400).json({'message': `CPF não encontrado - ${err.message}  `})
+    }
+
+  }
 }
 
 export default ApolicesController;

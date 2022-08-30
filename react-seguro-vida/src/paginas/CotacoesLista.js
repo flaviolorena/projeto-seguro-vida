@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Container, Paper, Typography } from "@mui/material";
-import http from '../servicos/http.js'
 
-import ItemApolice from "../componentes/ItemApolice";
+import http from '../servicos/http.js'
+import ItemCotacao from "../componentes/ItemCotacao.js";
 
 function Cotacoes() {
-  const [apolices, setApolices] = useState([])
+  const [cotacoes, setCotacoes] = useState([])
   const [loading, setLoading] = useState(true)
-  const [semApolice, setSemApolice] = useState(true)
 
   const getData = () =>{
     const getApolices = async () => {
       try{
-        const {data} = await http.get('apolices/')
-        setApolices(data);
+        const {data} = await http.get('cotacoes/')
+        setCotacoes(data);
         setLoading(false)
 
       }catch(error){
@@ -27,8 +26,8 @@ function Cotacoes() {
     getData()
   },[])
 
-  const itemCotacao = apolices.map((item) => <ItemApolice key={item.n_apolice} info={item}/>).reverse()
-  
+  const itemCotacao = cotacoes.map((item) => <ItemCotacao key={item.n_apolice} info={item}/>).reverse()
+
 
 if(loading){
   return (
@@ -50,13 +49,13 @@ if(loading){
       <Paper>
 
       <Typography component='h1' variant='h5' textAlign='center'>
-          Lista de Apolices
+          Lista de Cotações
       </Typography>
 
       <div className="lista-cotacoes">
         <div className="item-cotacoes">
           {itemCotacao}
-      {itemCotacao.length === 0 && <p>Você ainda não tem apolices para exibir</p>}
+      {itemCotacao.length === 0 && <p>Você ainda não tem cotações para exibir</p>}
         </div>
       </div>
 

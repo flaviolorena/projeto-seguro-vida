@@ -82,31 +82,7 @@
   font-size: 14px;
 }
 
-.btn-limpar{
-  width: 80px;
-  height: 40px;
-  padding: 8px;
-  border-radius: 14px;
-  color:aliceblue;
-  background-color: #d36033;
-  border: none;
-  margin: 20px 20px;
-  font-size: 14px;
-  font-weight: bold;
-}
 
-.btn-enviar{
-  width: 80px;
-  height: 40px;
-  padding: 8px;
-  border-radius: 14px;
-  color:aliceblue;
-  background-color: #338bd3;
-  border: none;
-  margin: 20px 20px;
-  font-size: 14px;
-  font-weight: bold;
-}
 
 .btn-elaborar{
   width: 140px;
@@ -116,11 +92,10 @@
   color:aliceblue;
   background-color: #338bd3;
   border: none;
-  margin: 20px 20px;
+  margin: 10px ;
   font-size: 14px;
   font-weight: bold;
 }
-
 
 .container-btn{
   display: flex;
@@ -167,4 +142,19 @@
 .descCobertura{
   font-weight: 300;
   font-size: 16px;
+}
+
+.avisoCpf{
+  font-weight: 400;
+  font-size: 15px;
+  background-color: #ffc5c5;
+  color: #5f0606;
+  width: 200px;
+  text-align: center;
+  padding: 10px;
+   
+}
+
+.btn-elaborar:disabled{
+  background-color: #a3a3a3;
 }

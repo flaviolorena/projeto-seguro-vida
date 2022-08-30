@@ -7,6 +7,7 @@ router
 //rota para chamar o metodo
   .get('/apolices', ApolicesController.listarApolices)
   .get('/apolices/busca', ApolicesController.listarApolicePorNum)
+  .get('/apolices/cpf', ApolicesController.listarApolicePorCPF)
   .get('/apolices/:id', ApolicesController.listarApolicePorId)
   .post('/apolices',ApolicesController.cadastrarApolice)
   .put('/apolices/:id',ApolicesController.atualizarApolice)

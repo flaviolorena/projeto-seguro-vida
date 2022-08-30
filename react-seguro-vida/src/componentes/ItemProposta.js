@@ -37,8 +37,6 @@ function ItemProposta(props) {
 
   } 
 
-
-
   return (
     <Paper className="item-cotacoes">
         <div className="campoCotacao">

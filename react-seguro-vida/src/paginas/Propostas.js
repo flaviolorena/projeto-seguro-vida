@@ -16,7 +16,8 @@ function Propostas() {
   const [proposta, setProposta] = useState({})
   const [loading, setLoading] = useState(true)
   let n_cotacao = window.location.search.replace('?','')
-  
+  let btnElaborar = document.getElementById("bnt-elaborar")
+
 
   useEffect(() =>{
     const getProposta = async () => {
@@ -36,7 +37,17 @@ function Propostas() {
   function setPagamento(evento){
     const parcelas = evento.target.value
     setProposta({...proposta, qtParcelas: parcelas})
+    validateForm()
+  }
 
+  function validateForm(){
+    if(
+      proposta.qtParcelas < 0 
+    ){
+      //
+    }else{
+      btnElaborar.removeAttribute('disabled')
+    }
   }
 
   function postProposta(){
@@ -121,7 +132,7 @@ function Propostas() {
                 <option value="12" > Parcelado 12x: R$ {calcParcelas(proposta.valorPago,12)} </option>
               </select>
             </fieldset>
-            <button className="btn-elaborar" type="submit" >Elaborar apolice</button>
+            <button className="btn-elaborar" id="bnt-elaborar" disabled type="submit" >Elaborar apolice</button>
 
           </form>
         </div>
