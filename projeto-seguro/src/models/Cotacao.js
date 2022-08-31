@@ -23,9 +23,14 @@ const cotacaoSchema = new mongoose.Schema(
 // cotacaoSchema.plugin(autoIncrement.plugin, {model: 'cotacoes', field: 'n_cotacao' })
 
 cotacaoSchema.pre('save', async function() {
-    let data =  this.inicioVigencia
-    data = data.setDate(data.getDate() + 1)
-    
+    // let data =  this.inicioVigencia
+    // data = data.setDate(data.getDate() + 1)
+   
+    // let data =  this.inicioVigencia
+    // data = new Date()
+    // data = data.setDate(data.getDate() + 1)
+    // this.inicioVigencia = data
+
   })
 
 const cotacoes = mongoose.model('cotacoes', cotacaoSchema)

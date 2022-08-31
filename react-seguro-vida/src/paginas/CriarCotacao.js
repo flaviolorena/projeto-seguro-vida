@@ -1,7 +1,6 @@
 import { Container , Typography } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import BuscaCobertura from '../componentes/buscaCobertura'
 
 
 import http from '../servicos/http.js'
@@ -14,8 +13,9 @@ function CriarCotacao() {
   const [contador, setContador] = useState([])
   const [ minMaxVigencia , setMinMaxVigencia] = useState({})
   const [temCpf, setTemCpf] = useState(false)
+  const [permiteEnvio, setPermiteEnvio] = useState(false)
 
-  let btnElaborar = document.getElementById("bnt-elaborar")
+  // let btnElaborar = document.getElementById("bnt-elaborar")
 
   const [cotacao, setCotacao] = useState({
     n_cotacao: undefined,
@@ -45,10 +45,13 @@ function CriarCotacao() {
 
   useEffect(()=>{
     function dataVigencia(){
-        const now = new Date()
-        const date = now.getDate() + 1
-        const month = now.getMonth()
-        const year = now.getFullYear()
+      var novaData = new Date();
+      var nextDay = new Date(novaData);
+      nextDay.setDate(novaData.getDate() + 1);
+
+        const date = nextDay.getDate()
+        const month = nextDay.getMonth()
+        const year = nextDay.getFullYear()
         return `${date}/${month}/${year}`
     }
     const getNumCotacao = async () => {
@@ -76,12 +79,12 @@ function CriarCotacao() {
       var now = new Date();
       const min = new Date(now.getFullYear() + 5, now.getMonth(), now.getDate() + 1)
       const max = new Date(now.getFullYear() + 10, now.getMonth(), now.getDate() + 1)
-      const minDate = `${min.getFullYear()}-${String(min.getMonth()).padStart(2,'0')}-${min.getDate()}`
-      const maxDate = `${max.getFullYear()}-${String(max.getMonth()).padStart(2,'0')}-${max.getDate()}`
+      const minDate = `${min.getFullYear()}-${String(min.getMonth()).padStart(2,'0')}-${String(min.getDate()).padStart(2,'0')}`
+      const maxDate = `${max.getFullYear()}-${String(max.getMonth()).padStart(2,'0')}-${String(max.getDate()).padStart(2,'0')}`
       setMinMaxVigencia({
         min: minDate,
         max: maxDate
-      })      
+      })    
       
     }
     dataVigencia()
@@ -93,6 +96,9 @@ function CriarCotacao() {
     existeCPF()
   },[cotacao.cobertura, cotacao.cpf])
 
+  useEffect(()=>{
+    validateForm()
+  },[cotacao, temCpf])
 
   function editCotacao(){
     const novoContador = contador + 1
@@ -109,6 +115,7 @@ function CriarCotacao() {
           setTemCpf(true)
         }else{
           setTemCpf(false)
+
         }
       }catch(error){
         console.error(error)
@@ -119,21 +126,19 @@ function CriarCotacao() {
 
   }
 
-
-
   function validateForm(){
     if(
-      cotacao.nome === '' ||
-      temCpf === true ||
-      cotacao.cpf.length !== 11 ||
-      cotacao.inicioVigencia === '' ||
-      cotacao.terminoVigencia === '' ||
-      cotacao.valorRisco === '' ||
-      cotacao.cobertura === '' 
+      cotacao.nome !== '' &&
+      temCpf === false &&
+      cotacao.cpf.length === 11 &&
+      cotacao.inicioVigencia !== '' &&
+      cotacao.terminoVigencia !== '' &&
+      cotacao.valorRisco !== '' &&
+      cotacao.cobertura !== '' 
     ){
-      //
+      setPermiteEnvio(true)
     }else{
-      btnElaborar.removeAttribute('disabled')
+      setPermiteEnvio(false)
     }
   }
 
@@ -294,7 +299,14 @@ function CriarCotacao() {
 
         
         <div className="container-btn">
-          <button className="btn-elaborar" id="bnt-elaborar" disabled type="submit" >Elaborar proposta</button>
+          {
+            permiteEnvio ?
+            <button className="btn-elaborar" id="bnt-elaborar" type="submit" >Elaborar proposta</button>
+            :
+            <button className="btn-elaborar" id="bnt-elaborar" disabled  >Elaborar proposta</button>
+
+          }
+          
              
         </div>
       </fieldset>

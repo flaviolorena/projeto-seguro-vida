@@ -8,16 +8,15 @@ import ItemProposta from '../componentes/ItemProposta'
 
 
 function Propostas() {
-  //estado nao esta setando no tempo correto
-  // const [n_cotacao, setN_cotacao] = useState(null)
 
+  
   const navigate = useNavigate()
-
+  
+  let n_cotacao = window.location.search.replace('?','')
   const [proposta, setProposta] = useState({})
   const [loading, setLoading] = useState(true)
-  let n_cotacao = window.location.search.replace('?','')
+  
   let btnElaborar = document.getElementById("bnt-elaborar")
-
 
   useEffect(() =>{
     const getProposta = async () => {
@@ -33,6 +32,9 @@ function Propostas() {
 
   },[setProposta, loading])
 
+  useEffect(()=>{
+    validateForm()
+  },[proposta.qtParcelas])
 
   function setPagamento(evento){
     const parcelas = evento.target.value
@@ -41,13 +43,8 @@ function Propostas() {
   }
 
   function validateForm(){
-    if(
-      proposta.qtParcelas < 0 
-    ){
-      //
-    }else{
-      btnElaborar.removeAttribute('disabled')
-    }
+    return proposta.qtParcelas >= 0 ? btnElaborar.removeAttribute('disabled') : ''
+
   }
 
   function postProposta(){

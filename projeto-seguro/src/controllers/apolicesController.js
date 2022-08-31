@@ -76,7 +76,6 @@ class ApolicesController {
     try{
       const numeroCPF = req.query.cpf
       const dadoCPF = await apolices.find({"cpf": numeroCPF},)
-			console.log(dadoCPF)
       res.status(200).send(dadoCPF)
     }
 

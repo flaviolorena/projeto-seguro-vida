@@ -51,7 +51,7 @@ function ItemApolice(props) {
   return (
     <Paper className="item-cotacoes">
         <div className="campoCotacao">
-          <p>Número da proposta: </p>
+          <p>Número da cotação: </p>
           <p className="valorCotacao"> {props.info.n_apolice} </p> 
         </div>        
         <div className="campoCotacao">

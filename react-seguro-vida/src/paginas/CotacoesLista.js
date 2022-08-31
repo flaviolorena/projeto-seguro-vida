@@ -26,7 +26,7 @@ function Cotacoes() {
     getData()
   },[])
 
-  const itemCotacao = cotacoes.map((item) => <ItemCotacao key={item.n_apolice} info={item}/>).reverse()
+  const itemCotacao = cotacoes.map((item) => <ItemCotacao key={item.n_cotacao} info={item}/>).reverse()
 
 
 if(loading){

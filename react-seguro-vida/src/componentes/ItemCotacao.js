@@ -4,7 +4,6 @@ import BuscaCobertura from './buscaCobertura'
 import http from '../servicos/http.js'
 
 function ItemCotacao(props) {
-  console.log(props)
   const [coberturas, setCoberturas] = useState([])
   const [loading, setLoading] = useState(true)
 
